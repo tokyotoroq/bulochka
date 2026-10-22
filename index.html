@@ -2,162 +2,189 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Наше Пространство</title>
-    <!-- Официальный скрипт Telegram -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Наш Закат</title>
     <script src="https://telegram.org"></script>
-    <!-- Tailwind CSS для стилей -->
-    <script src="https://tailwindcss.com"></script>
+    <!-- Подключаем Tailwind корректно -->
+    <link href="https://jsdelivr.net" rel="stylesheet">
     <style>
-        /* Закатный фиолетово-розовый градиент на фоне */
         body {
-            background: linear-gradient(180deg, #1e112a 0%, #3a1c5c 40%, #632c65 80%, #a85475 100%);
-            min-height: 100vh;
+            background: linear-gradient(180deg, #0d0614 0%, #1a0b2e 50%, #2d0b3d 100%);
             color: #f3e8ff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-user-select: none;
+            user-select: none;
         }
-        /* Эффект матового стекла для карточек (Glassmorphism) */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .active-tab {
-            color: #f472b6; /* Неоново-розовый активный цвет */
-            filter: drop-shadow(0 0 8px rgba(244, 114, 182, 0.6));
+        .active-nav {
+            color: #d946ef;
+            text-shadow: 0 0 10px rgba(217, 70, 239, 0.6);
         }
+        /* Скрытие скроллбара */
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="flex flex-col justify-between pb-24">
+<body class="h-screen w-full flex flex-col justify-between overflow-hidden p-4">
 
-    <!-- ВЕРХНЯЯ ШАПКА -->
-    <header class="p-6 text-center">
-        <p class="text-xs uppercase tracking-widest text-purple-300 opacity-80">Ты здесь. Я здесь.</p>
-    </header>
+    <!-- ФОНОВЫЙ ДЕКОРАТИВНЫЙ ЗАКАТНЫЙ КРУГ -->
+    <div class="absolute -top-20 -left-20 w-64 h-64 bg-purple-600 rounded-full filter blur-[80px] opacity-30 pointer-events-none"></div>
+    <div class="absolute bottom-20 -right-20 w-72 h-72 bg-pink-600 rounded-full filter blur-[90px] opacity-20 pointer-events-none"></div>
 
-    <!-- КОНТЕНТНАЯ ЗОНА (ЭКРАНЫ) -->
-    <main class="px-4 flex-grow flex items-center justify-center">
+    <!-- ВЕРХНЯЯ ИНФО-ПАНЕЛЬ -->
+    <div class="w-full flex justify-between items-center z-10 pt-2">
+        <div>
+            <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-pink-300">Наше Пространство</h1>
+            <p class="text-[10px] text-purple-400 uppercase tracking-widest">Рядом, несмотря на километры</p>
+        </div>
+        <div class="glass-panel px-3 py-1.5 rounded-full text-xs flex items-center gap-1.5 text-pink-300">
+            <span>✨</span> <span id="user-greeting">Мы</span>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ЭКРАН (КОНТЕНТ) -->
+    <div class="flex-grow w-full overflow-y-auto my-4 z-10 pb-20">
         
-        <!-- ЭКРАН 1: Островок тепла (Активен по умолчанию) -->
-        <div id="screen-home" class="w-full max-w-sm space-y-6">
-            <!-- Главное фото заката / воспоминания -->
-            <div class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-purple-500/20">
-                <img src="https://unsplash.com" 
-                     alt="Наш закат" 
-                     class="w-full h-full object-cover">
-                <!-- Затемнение внизу фотографии -->
-                <div class="absolute inset-0 bg-gradient-to-t from-[#1e112a] via-transparent to-transparent"></div>
-                <div class="absolute bottom-4 left-4 right-4 text-center">
-                    <p class="text-sm font-medium text-purple-200">Тот самый вечер у реки</p>
+        <!-- ЭКРАН 1: ГЛАВНАЯ (ОСТРОВОК) -->
+        <div id="scr-home" class="space-y-4">
+            <!-- Главная карточка-закат -->
+            <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden relative border border-purple-500/20 shadow-xl">
+                <img src="https://unsplash.com" class="w-full h-full object-cover" alt="Закат">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0d0614] via-transparent to-transparent"></div>
+                <div class="absolute bottom-3 left-4">
+                    <span class="text-[10px] bg-purple-950/80 px-2 py-0.5 rounded-full text-purple-300 border border-purple-500/30">Момент дня</span>
+                    <p class="text-sm font-medium mt-1 text-purple-100">Помнишь, какой закат был тогда?</p>
                 </div>
             </div>
 
-            <!-- Мягкая кнопка «Помню это» -->
-            <button onclick="sendTouch()" class="w-full py-4 rounded-2xl glass-card text-center font-medium tracking-wide active:scale-95 transition-all duration-200 hover:bg-white/10 flex items-center justify-center gap-2">
-                <span>П о м н ю &nbsp; э т о</span>
-                <span class="text-rose-400 text-lg">✨</span>
-            </button>
+            <!-- Интерактивная кнопка-плитка -->
+            <div onclick="sendHeart()" class="glass-panel w-full p-5 rounded-2xl flex items-center justify-between cursor-pointer active:scale-[0.98] transition-transform">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-xl shadow-inner border border-purple-500/20">🔮</div>
+                    <div>
+                        <h3 class="font-medium text-sm text-purple-200">Кнопка «Помню это»</h3>
+                        <p class="text-xs text-purple-400 mt-0.5">Коснись, чтобы она узнала</p>
+                    </div>
+                </div>
+                <span class="text-xs text-pink-400 font-bold bg-pink-500/10 px-3 py-1 rounded-full border border-pink-500/20 shadow-sm">Нажать</span>
+            </div>
         </div>
 
-        <!-- ЭКРАН 2: Капсула времени (Скрыт) -->
-        <div id="screen-capsule" class="hidden w-full max-w-md">
-            <h2 class="text-xl font-light mb-4 text-purple-200">Копилка моментов</h2>
+        <!-- ЭКРАН 2: КАПСУЛА (БЕНТО-СЕТКА) -->
+        <div id="scr-capsule" class="hidden space-y-3">
             <div class="grid grid-cols-2 gap-3">
-                <div class="glass-card p-4 rounded-2xl aspect-square flex flex-col justify-between">
-                    <span class="text-xs text-purple-300">12 Октября</span>
-                    <p class="text-sm text-purple-100">Послушай этот трек, напомнил о нас...</p>
+                <div class="glass-panel p-4 rounded-2xl h-36 flex flex-col justify-between border-l-2 border-purple-500">
+                    <span class="text-[10px] uppercase text-purple-400">12 Октября</span>
+                    <p class="text-xs text-purple-200 leading-relaxed">Послушай этот трек, он прямо про наш прошлый сентябрь... 🎧</p>
                 </div>
-                <div class="glass-card p-4 rounded-2xl aspect-square bg-purple-900/20">
-                    <span class="text-xs text-purple-300">Вчера</span>
-                    <p class="text-sm text-purple-100">Хочу вернуться в тот парк 💜</p>
+                <div class="glass-panel p-4 rounded-2xl h-36 flex flex-col justify-between border-l-2 border-pink-500">
+                    <span class="text-[10px] uppercase text-pink-400">Вчера</span>
+                    <p class="text-xs text-purple-200 leading-relaxed">Безумно хочу вернуться в то маленькое уютное кафе.</p>
                 </div>
+            </div>
+            <div class="glass-panel p-4 rounded-2xl flex justify-between items-center cursor-pointer active:opacity-80">
+                <span class="text-xs text-purple-300">+ Добавить новое воспоминание</span>
+                <span class="text-purple-400 text-lg">📸</span>
             </div>
         </div>
 
-        <!-- ЭКРАН 3: Прикосновения (Скрыт) -->
-        <div id="screen-touch" class="hidden w-full max-w-sm text-center space-y-6">
-            <p class="text-sm text-purple-200 font-light">Коснись экрана, чтобы отправить тепло</p>
-            <div onclick="triggerPulse()" class="w-48 h-48 mx-auto rounded-full glass-card flex items-center justify-center cursor-pointer active:scale-95 transition-transform bg-gradient-to-tr from-purple-600/20 to-pink-500/20 shadow-[0_0_50px_rgba(147,51,234,0.2)]">
-                <div class="w-32 h-32 rounded-full bg-purple-500/10 border border-purple-400/30 flex items-center justify-center text-3xl">🌌</div>
+        <!-- ЭКРАН 3: ПРИСУТСТВИЕ -->
+        <div id="scr-touch" class="hidden flex flex-col items-center justify-center h-full space-y-6 pt-10">
+            <p class="text-xs text-purple-300 max-w-xs text-center leading-relaxed">Когда ей тяжело или одиноко, зажми эту сферу. Её экран мягко начнет пульсировать теплом.</p>
+            <div ontouchstart="startPulse()" ontouchend="endPulse()" class="w-40 h-40 rounded-full glass-panel flex items-center justify-center cursor-pointer shadow-[0_0_40px_rgba(168,85,247,0.15)] border border-purple-500/30 active:scale-95 transition-all duration-300">
+                <div class="w-28 h-28 rounded-full bg-gradient-to-tr from-purple-600/20 to-pink-500/20 border border-purple-400/40 flex items-center justify-center text-3xl animate-pulse">🌌</div>
+            </div>
+            <p id="pulse-status" class="text-[10px] uppercase tracking-wider text-purple-500">Режим ожидания</p>
+        </div>
+
+        <!-- ЭКРАН 4: ПЛАНЫ -->
+        <div id="scr-future" class="hidden space-y-3">
+            <div class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_#d946ef]"></div>
+                    <span class="text-xs text-purple-200">Встретить вместе рассвет на крыше</span>
+                </div>
+                <span class="text-xs opacity-40">⏳</span>
+            </div>
+            <div class="glass-panel p-4 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]"></div>
+                    <span class="text-xs text-purple-200">Приготовить огромную лазанью</span>
+                </div>
+                <span class="text-xs opacity-40">⏳</span>
             </div>
         </div>
 
-        <!-- ЭКРАН 4: Мы когда-нибудь (Скрыт) -->
-        <div id="screen-future" class="hidden w-full max-w-sm space-y-4">
-            <h2 class="text-xl font-light text-purple-200">Наше «Когда-нибудь»</h2>
-            <div class="space-y-2">
-                <div class="glass-card p-4 rounded-xl flex items-center gap-3">
-                    <input type="checkbox" class="rounded bg-purple-900 border-purple-500 text-pink-500 focus:ring-0">
-                    <span class="text-sm">Встретить рассвет на крыше</span>
-                </div>
-                <div class="glass-card p-4 rounded-xl flex items-center gap-3">
-                    <input type="checkbox" class="rounded bg-purple-900 border-purple-500 text-pink-500 focus:ring-0">
-                    <span class="text-sm">Приготовить вместе лазанью</span>
-                </div>
-            </div>
-        </div>
+    </div>
 
-    </main>
-
-    <!-- НИЖНЯЯ НАВИГАЦИЯ (МАТОВОЕ СТЕКЛО) -->
-    <nav class="fixed bottom-4 left-4 right-4 h-16 rounded-2xl glass-card flex justify-around items-center px-2">
-        <button onclick="switchTab('home')" id="tab-home" class="flex flex-col items-center text-xs gap-1 active-tab">
-            <span class="text-xl">🌌</span>
+    <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (КАК НА СКРИНШОТЕ 3) -->
+    <div class="fixed bottom-4 left-4 right-4 h-16 rounded-2xl glass-panel z-50 flex justify-around items-center px-2 shadow-2xl">
+        <button onclick="navTo('home')" id="btn-home" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400 active-nav">
+            <span class="text-lg">🌌</span>
             <span>Главная</span>
         </button>
-        <button onclick="switchTab('capsule')" id="tab-capsule" class="flex flex-col items-center text-xs gap-1 text-purple-300">
-            <span class="text-xl">🔮</span>
+        <button onclick="navTo('capsule')" id="btn-capsule" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400">
+            <span class="text-lg">🔮</span>
             <span>Капсула</span>
         </button>
-        <button onclick="switchTab('touch')" id="tab-touch" class="flex flex-col items-center text-xs gap-1 text-purple-300">
-            <span class="text-xl">✨</span>
-            <span>Присутствие</span>
+        <button onclick="navTo('touch')" id="btn-touch" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400">
+            <span class="text-lg">✨</span>
+            <span>Тепло</span>
         </button>
-        <button onclick="switchTab('future')" id="tab-future" class="flex flex-col items-center text-xs gap-1 text-purple-300">
-            <span class="text-xl">⏳</span>
+        <button onclick="navTo('future')" id="btn-future" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400">
+            <span class="text-lg">⏳</span>
             <span>Планы</span>
         </button>
-    </nav>
+    </div>
 
-    <!-- СКРИПТ ДЛЯ ПЕРЕКЛЮЧЕНИЯ ВКЛАДОК -->
     <script>
         const tg = window.Telegram?.WebApp;
         if (tg) {
             tg.expand();
             tg.ready();
+            // Подтягиваем имя пользователя из ТГ
+            const user = tg.initDataUnsafe?.user;
+            if (user?.first_name) {
+                document.getElementById('user-greeting').innerText = user.first_name;
+            }
         }
 
-        function switchTab(tabName) {
-            // Скрываем все экраны
-            document.getElementById('screen-home').classList.add('hidden');
-            document.getElementById('screen-capsule').classList.add('hidden');
-            document.getElementById('screen-touch').classList.add('hidden');
-            document.getElementById('screen-future').classList.add('hidden');
-
-            // Убираем активный класс со всех кнопок
-            document.getElementById('tab-home').classList.remove('active-tab');
-            document.getElementById('tab-capsule').classList.remove('active-tab');
-            document.getElementById('tab-touch').classList.remove('active-tab');
-            document.getElementById('tab-future').classList.remove('active-tab');
-
-            // Показываем нужный экран и активируем кнопку
-            document.getElementById(`screen-${tabName}`).classList.remove('hidden');
-            document.getElementById(`tab-${tabName}`).classList.add('active-tab');
-            
-            // Легкая вибрация телефона при клике (фишка Telegram Mini App)
+        function navTo(screenId) {
+            ['home', 'capsule', 'touch', 'future'].forEach(s => {
+                document.getElementById(`scr-${s}`).classList.add('hidden');
+                document.getElementById(`btn-${s}`).classList.remove('active-nav');
+            });
+            document.getElementById(`scr-${screenId}`).classList.remove('hidden');
+            document.getElementById(`btn-${screenId}`).classList.add('active-nav');
             tg?.HapticFeedback?.impactOccurred('light');
         }
 
-        function sendTouch() {
+        function sendHeart() {
             tg?.HapticFeedback?.notificationOccurred('success');
-            alert('Ты отправил лучи тепла! ❤️ (Позже тут будет отправка в базу данных)');
+            // Эмуляция отправки данных в Телеграм-бот
+            if (tg) {
+                tg.sendData(JSON.stringify({action: "remember_click", time: new Date().toLocaleTimeString()}));
+            } else {
+                alert("Лучи тепла отправлены! (В браузере)");
+            }
         }
 
-        function triggerPulse() {
+        function startPulse() {
+            document.getElementById('pulse-status').innerText = 'Отправка тепла...';
+            document.getElementById('pulse-status').classList.remove('text-purple-500');
+            document.getElementById('pulse-status').classList.add('text-pink-400');
             tg?.HapticFeedback?.impactOccurred('medium');
-        }
-    </script>
-</body>
-</html>
+            }
+            document.addEventListener('touchend', endPulse);
+        function endPulse() {
+        const status = document.getElementById('pulse-status');
+        if(status) {
+            status.innerText = 'Режим ожидания';
+            status.classList.remove('text-pink-400');
+            status.classList.add('text-purple-500');
+            }
+         }
