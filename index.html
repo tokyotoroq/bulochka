@@ -1,190 +1,464 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Наш Закат</title>
-    <script src="https://telegram.org"></script>
-    <!-- Подключаем Tailwind корректно -->
-    <link href="https://jsdelivr.net" rel="stylesheet">
-    <style>
-        body {
-            background: linear-gradient(180deg, #0d0614 0%, #1a0b2e 50%, #2d0b3d 100%);
-            color: #f3e8ff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .active-nav {
-            color: #d946ef;
-            text-shadow: 0 0 10px rgba(217, 70, 239, 0.6);
-        }
-        /* Скрытие скроллбара */
-        ::-webkit-scrollbar { display: none; }
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#211638">
+<title>Наша пекарня с булочками</title>
+<style>
+:root{
+  --bg:#211638; --bg2:#30204b; --lav:#d9c4ff; --lav2:#b99aff;
+  --pink:#f0c7f4; --text:#fbf7ff; --muted:#c7b7df;
+  --glass:rgba(255,255,255,.085); --line:rgba(226,204,255,.20);
+  --shadow:0 16px 40px rgba(10,4,24,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body{min-height:100dvh;overflow:hidden}
+button,input,textarea{font:inherit}
+button{color:inherit}
+.app-bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:
+ radial-gradient(ellipse at 12% 8%,rgba(179,132,255,.32),transparent 34%),
+ radial-gradient(ellipse at 92% 40%,rgba(218,145,239,.20),transparent 34%),
+ radial-gradient(ellipse at 40% 100%,rgba(111,79,175,.34),transparent 45%),
+ linear-gradient(155deg,#302148 0%,#25183d 46%,#1e1633 100%)}
+.app-bg:before{content:"";position:absolute;inset:0;opacity:.48;background-image:
+ radial-gradient(1px 1px at 12% 14%,#fff 98%,transparent),
+ radial-gradient(1.5px 1.5px at 72% 12%,#fff 98%,transparent),
+ radial-gradient(1px 1px at 44% 26%,#e9d9ff 98%,transparent),
+ radial-gradient(1px 1px at 88% 30%,#fff 98%,transparent),
+ radial-gradient(1px 1px at 26% 48%,#fff 98%,transparent),
+ radial-gradient(1.5px 1.5px at 62% 58%,#f5d8ff 98%,transparent),
+ radial-gradient(1px 1px at 10% 72%,#fff 98%,transparent),
+ radial-gradient(1px 1px at 80% 83%,#fff 98%,transparent),
+ radial-gradient(1px 1px at 35% 91%,#e9d9ff 98%,transparent)}
+.app-bg:after{content:"";position:absolute;left:-20%;right:-20%;bottom:-17%;height:45%;background:radial-gradient(ellipse at 50% 100%,rgba(163,117,228,.28),transparent 65%);filter:blur(15px)}
+.shell{position:relative;z-index:1;display:flex;flex-direction:column;height:100dvh;max-width:680px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 15px) 16px calc(env(safe-area-inset-bottom) + 10px)}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:4px 2px 15px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand-mark{width:43px;height:43px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(145deg,rgba(208,174,255,.28),rgba(255,255,255,.05));display:grid;place-items:center;box-shadow:0 0 25px rgba(186,140,255,.10);flex:none}
+.brand-mark svg{width:24px;height:24px}
+h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);font-weight:500;letter-spacing:.1px;margin:0;line-height:1.12}
+.subtitle{font-size:11px;letter-spacing:.5px;color:var(--muted);margin-top:5px}
+.icon-btn{width:40px;height:40px;border-radius:14px;border:1px solid var(--line);background:var(--glass);display:grid;place-items:center;flex:none}
+.icon-btn svg{width:19px;height:19px}
+.content{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 1px 100px;scrollbar-width:none}
+.content::-webkit-scrollbar{display:none}
+.screen{display:none;animation:fade .22s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
+.hero{position:relative;min-height:244px;border:1px solid rgba(222,197,255,.34);border-radius:25px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 20px;background:
+ radial-gradient(ellipse at 50% 95%,rgba(244,174,245,.55),transparent 32%),
+ radial-gradient(ellipse at 20% 20%,rgba(162,120,235,.6),transparent 45%),
+ radial-gradient(ellipse at 85% 30%,rgba(114,102,210,.52),transparent 42%),
+ linear-gradient(160deg,#68549b 0%,#403164 42%,#28203f 100%);box-shadow:var(--shadow)}
+.hero:before{content:"";position:absolute;inset:0;background:
+ linear-gradient(180deg,rgba(25,15,43,.02),rgba(23,15,41,.58)),
+ radial-gradient(1.5px 1.5px at 16% 22%,#fff 98%,transparent),
+ radial-gradient(1px 1px at 80% 18%,#fff 98%,transparent),
+ radial-gradient(1px 1px at 64% 42%,#f4dfff 98%,transparent),
+ radial-gradient(1px 1px at 34% 16%,#fff 98%,transparent)}
+.moon{position:absolute;right:13%;top:15%;width:30px;height:30px;border-radius:50%;background:#fff0ff;box-shadow:0 0 24px rgba(255,220,255,.65)}
+.moon:after{content:"";position:absolute;left:9px;top:-4px;width:30px;height:30px;border-radius:50%;background:#6c579a}
+.horizon{position:absolute;left:-10%;right:-10%;bottom:0;height:35%;background:linear-gradient(0deg,rgba(21,15,40,.78),transparent);border-radius:50% 50% 0 0}
+.hero-content{position:relative;z-index:1}
+.eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#e7d8ff}
+.hero h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(34px,9vw,47px);margin:9px 0 8px;text-shadow:0 3px 24px rgba(24,12,47,.28)}
+.hero p{margin:0 auto 17px;max-width:250px;color:#f1e7ff;font-size:13px;line-height:1.5}
+.primary-btn{border:1px solid rgba(255,255,255,.36);border-radius:999px;padding:11px 19px;background:linear-gradient(120deg,rgba(189,143,255,.92),rgba(219,151,239,.86));box-shadow:0 6px 24px rgba(179,123,255,.24);color:#fff;font-weight:600;font-size:13px;cursor:pointer;transition:transform .15s}
+.primary-btn:active,.tile:active,.nav-btn:active{transform:scale(.98)}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:23px 2px 12px}
+.section-head h3{font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:400;color:#eadbff;margin:0}
+.section-head span{font-size:11px;color:var(--muted)}
+.glass{background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 10px 28px rgba(12,5,26,.12)}
+.tile{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:14px;border-radius:20px;cursor:pointer;transition:transform .15s,background .2s}
+.tile+.tile{margin-top:10px}
+.tile-icon{width:54px;height:54px;border-radius:17px;display:grid;place-items:center;flex:none;background:linear-gradient(145deg,rgba(199,159,255,.27),rgba(244,190,247,.09));border:1px solid rgba(223,197,255,.23);font-size:24px}
+.tile-copy{flex:1;min-width:0}
+.tile-title{font-size:14px;font-weight:600;color:#fff4ff}
+.tile-desc{font-size:12px;color:var(--muted);line-height:1.45;margin-top:4px}
+.chevron{color:#d8bcff;font-size:24px;padding:0 2px}
+
+.couple-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.couple-photo{padding:8px;border-radius:20px;min-width:0}
+.couple-photo-frame{position:relative;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:linear-gradient(145deg,rgba(190,151,255,.19),rgba(255,255,255,.035));display:grid;place-items:center;border:1px solid rgba(226,204,255,.13)}
+.couple-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.couple-photo-placeholder{font-size:32px;color:rgba(225,202,255,.75);text-shadow:0 0 20px rgba(196,153,255,.35)}
+.couple-photo-label{text-align:center;font-size:12px;color:#eadbff;padding:9px 2px 3px}
+
+.memory-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.memory-card{min-height:150px;border-radius:20px;padding:14px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.memory-card:before{content:"";position:absolute;inset:0;background:linear-gradient(145deg,rgba(191,153,255,.14),transparent 60%);pointer-events:none}
+.memory-card>*{position:relative}
+.memory-date{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#d6c0ff}
+.memory-emoji{font-size:25px;margin:10px 0}
+.memory-title{font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.2}
+.memory-desc{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.4}
+.add-card{width:100%;margin-top:11px;border-radius:17px;padding:14px;display:flex;justify-content:space-between;align-items:center;text-align:left;color:#e5d3ff;cursor:pointer}
+.touch-wrap{text-align:center;padding:18px 0 10px}
+.touch-intro{max-width:310px;margin:0 auto 26px;font-size:13px;line-height:1.6;color:var(--muted)}
+.touch-orb{width:190px;height:190px;margin:0 auto 21px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(224,197,255,.42);background:radial-gradient(circle,rgba(209,169,255,.22),rgba(255,255,255,.035) 65%);box-shadow:0 0 55px rgba(176,130,255,.16),inset 0 0 32px rgba(224,197,255,.10);cursor:pointer;touch-action:none;user-select:none;transition:box-shadow .25s,transform .25s}
+.touch-orb .inner{width:130px;height:130px;border-radius:50%;display:grid;place-items:center;font-size:49px;background:radial-gradient(circle at 35% 25%,rgba(238,204,255,.45),rgba(169,121,239,.14) 55%,rgba(255,255,255,.04));border:1px solid rgba(236,214,255,.42);box-shadow:0 0 35px rgba(195,147,255,.25)}
+.touch-orb.pressing{transform:scale(.96);box-shadow:0 0 80px rgba(231,165,255,.52),inset 0 0 45px rgba(255,214,255,.24)}
+.pulse-status{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#d8bdff}
+.small-note{font-size:11px;color:#aa98c8;line-height:1.5;margin:15px auto 0;max-width:290px}
+.plan-item{display:flex;align-items:center;gap:12px;padding:15px;border-radius:18px}
+.plan-item+.plan-item{margin-top:10px}
+.plan-dot{width:10px;height:10px;border-radius:50%;background:#d9b9ff;box-shadow:0 0 12px rgba(214,177,255,.7);flex:none}
+.plan-text{font-size:13px;line-height:1.45;flex:1}
+.plan-state{font-size:11px;color:var(--muted)}
+.empty-hint{font-size:12px;color:var(--muted);line-height:1.5;margin:0 2px 14px}
+.bottom-nav{position:fixed;z-index:5;bottom:calc(env(safe-area-inset-bottom) + 10px);left:50%;transform:translateX(-50%);width:min(calc(100% - 28px),640px);padding:7px;display:grid;grid-template-columns:repeat(4,1fr);gap:3px;border-radius:23px;background:rgba(39,28,61,.88);border:1px solid rgba(225,202,255,.25);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 14px 38px rgba(10,4,24,.34)}
+.nav-btn{min-width:0;border:0;background:transparent;border-radius:17px;padding:8px 3px 7px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#b9a5d8;font-size:10px;cursor:pointer;transition:all .2s}
+.nav-btn svg{width:21px;height:21px;stroke:currentColor}
+.nav-btn.active{color:#fff;background:linear-gradient(145deg,rgba(178,133,255,.58),rgba(210,157,241,.25));box-shadow:inset 0 0 0 1px rgba(232,211,255,.22)}
+.nav-btn.active svg{filter:drop-shadow(0 0 5px rgba(240,218,255,.5))}
+.toast{position:fixed;z-index:10;left:50%;bottom:calc(env(safe-area-inset-bottom) + 95px);transform:translate(-50%,12px);background:rgba(47,34,70,.96);border:1px solid var(--line);box-shadow:var(--shadow);padding:12px 16px;border-radius:15px;font-size:12px;color:#fff2ff;opacity:0;pointer-events:none;transition:all .2s;max-width:calc(100% - 40px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.modal-backdrop{position:fixed;inset:0;z-index:20;background:rgba(12,6,24,.58);backdrop-filter:blur(7px);display:none;align-items:flex-end;justify-content:center;padding:14px}
+.modal-backdrop.open{display:flex}
+.modal{width:min(100%,520px);border-radius:25px;padding:20px;background:linear-gradient(155deg,rgba(66,48,94,.98),rgba(35,25,54,.98));border:1px solid var(--line);box-shadow:var(--shadow)}
+.modal h3{font-family:Georgia,"Times New Roman",serif;font-size:23px;font-weight:400;margin:0 0 7px}
+.modal p{font-size:12px;color:var(--muted);line-height:1.5;margin:0 0 14px}
+.field{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.06);color:#fff;outline:none;margin-bottom:10px}
+.field::placeholder{color:#b9a9d1}
+.modal-actions{display:flex;gap:9px}
+.secondary-btn{flex:1;border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:999px;padding:11px;cursor:pointer}
+.modal .primary-btn{flex:1}
+
+.upload-panel{border-radius:22px;padding:20px 14px;text-align:center;margin-bottom:14px}
+.upload-symbol{width:48px;height:48px;border-radius:16px;margin:0 auto 10px;display:grid;place-items:center;background:rgba(200,164,255,.17);border:1px solid var(--line);font-size:28px;color:#e7d6ff}
+.upload-title{font-size:14px;font-weight:600}
+.upload-caption{font-size:11px;color:var(--muted);margin:5px 0 14px;line-height:1.4}
+.photo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.photo-item{position:relative;overflow:hidden;border-radius:18px;aspect-ratio:4/5;border:1px solid var(--line);background:rgba(255,255,255,.05)}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-label{position:absolute;left:0;right:0;bottom:0;padding:20px 10px 10px;font-size:10px;color:#fff;background:linear-gradient(transparent,rgba(15,8,28,.75))}
+.photo-remove{position:absolute;right:7px;top:7px;width:28px;height:28px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(24,15,39,.7);color:#fff;font-size:17px;cursor:pointer}
+.history-day{border-radius:19px;padding:13px;margin-bottom:11px}
+.history-day-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px}
+.history-day-title{font-family:Georgia,"Times New Roman",serif;font-size:17px;color:#f1e5ff}
+.history-day-count{font-size:10px;color:var(--muted)}
+.history-thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.history-thumb{aspect-ratio:1;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.05)}
+.history-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.history-empty{padding:16px;border-radius:18px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
+
+@media(min-width:560px){.shell{padding-left:22px;padding-right:22px}.hero{min-height:290px}.content{padding-bottom:110px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+</style>
 </head>
-<body class="h-screen w-full flex flex-col justify-between overflow-hidden p-4">
-
-    <!-- ФОНОВЫЙ ДЕКОРАТИВНЫЙ ЗАКАТНЫЙ КРУГ -->
-    <div class="absolute -top-20 -left-20 w-64 h-64 bg-purple-600 rounded-full filter blur-[80px] opacity-30 pointer-events-none"></div>
-    <div class="absolute bottom-20 -right-20 w-72 h-72 bg-pink-600 rounded-full filter blur-[90px] opacity-20 pointer-events-none"></div>
-
-    <!-- ВЕРХНЯЯ ИНФО-ПАНЕЛЬ -->
-    <div class="w-full flex justify-between items-center z-10 pt-2">
-        <div>
-            <h1 class="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-pink-300">Наше Пространство</h1>
-            <p class="text-[10px] text-purple-400 uppercase tracking-widest">Рядом, несмотря на километры</p>
-        </div>
-        <div class="glass-panel px-3 py-1.5 rounded-full text-xs flex items-center gap-1.5 text-pink-300">
-            <span>✨</span> <span id="user-greeting">Мы</span>
-        </div>
+<body>
+<div class="app-bg" aria-hidden="true"></div>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#ead8ff" stroke-width="1.7"><path d="M20.8 8.8c0 5.3-8.8 10.1-8.8 10.1S3.2 14.1 3.2 8.8A4.3 4.3 0 0 1 12 6.9a4.3 4.3 0 0 1 8.8 1.9Z"/><path d="M7 11.5c1.4 1.6 3 2.7 5 3.8"/></svg></div>
+      <div><h1>Наша пекарня с булочками</h1></div>
     </div>
+  </header>
 
-    <!-- ОСНОВНОЙ ЭКРАН (КОНТЕНТ) -->
-    <div class="flex-grow w-full overflow-y-auto my-4 z-10 pb-20">
-        
-        <!-- ЭКРАН 1: ГЛАВНАЯ (ОСТРОВОК) -->
-        <div id="scr-home" class="space-y-4">
-            <!-- Главная карточка-закат -->
-            <div class="w-full aspect-[4/3] rounded-2xl overflow-hidden relative border border-purple-500/20 shadow-xl">
-                <img src="https://unsplash.com" class="w-full h-full object-cover" alt="Закат">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#0d0614] via-transparent to-transparent"></div>
-                <div class="absolute bottom-3 left-4">
-                    <span class="text-[10px] bg-purple-950/80 px-2 py-0.5 rounded-full text-purple-300 border border-purple-500/30">Момент дня</span>
-                    <p class="text-sm font-medium mt-1 text-purple-100">Помнишь, какой закат был тогда?</p>
-                </div>
-            </div>
-
-            <!-- Интерактивная кнопка-плитка -->
-            <div onclick="sendHeart()" class="glass-panel w-full p-5 rounded-2xl flex items-center justify-between cursor-pointer active:scale-[0.98] transition-transform">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-xl shadow-inner border border-purple-500/20">🔮</div>
-                    <div>
-                        <h3 class="font-medium text-sm text-purple-200">Кнопка «Помню это»</h3>
-                        <p class="text-xs text-purple-400 mt-0.5">Коснись, чтобы она узнала</p>
-                    </div>
-                </div>
-                <span class="text-xs text-pink-400 font-bold bg-pink-500/10 px-3 py-1 rounded-full border border-pink-500/20 shadow-sm">Нажать</span>
-            </div>
+  <main class="content" id="content">
+    <section class="screen active" id="scr-home">
+      <div class="hero">
+        <div class="moon"></div><div class="horizon"></div>
+        <div class="hero-content">
+          <p>даже когда между нами километры, мы можем быть ближе.</p>
+          <button class="primary-btn" id="heroTouch">♡ &nbsp; Передать тепло</button>
         </div>
-
-        <!-- ЭКРАН 2: КАПСУЛА (БЕНТО-СЕТКА) -->
-        <div id="scr-capsule" class="hidden space-y-3">
-            <div class="grid grid-cols-2 gap-3">
-                <div class="glass-panel p-4 rounded-2xl h-36 flex flex-col justify-between border-l-2 border-purple-500">
-                    <span class="text-[10px] uppercase text-purple-400">12 Октября</span>
-                    <p class="text-xs text-purple-200 leading-relaxed">Послушай этот трек, он прямо про наш прошлый сентябрь... 🎧</p>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl h-36 flex flex-col justify-between border-l-2 border-pink-500">
-                    <span class="text-[10px] uppercase text-pink-400">Вчера</span>
-                    <p class="text-xs text-purple-200 leading-relaxed">Безумно хочу вернуться в то маленькое уютное кафе.</p>
-                </div>
-            </div>
-            <div class="glass-panel p-4 rounded-2xl flex justify-between items-center cursor-pointer active:opacity-80">
-                <span class="text-xs text-purple-300">+ Добавить новое воспоминание</span>
-                <span class="text-purple-400 text-lg">📸</span>
-            </div>
+      </div>
+      <div class="section-head"><h3>маленькие моменты</h3><span>наше общее пространство</span></div>
+      <button class="tile glass" id="heartTile">
+        <div class="tile-icon">♡</div><div class="tile-copy"><div class="tile-title">передать тепло</div><div class="tile-desc">небольшой знак, что мы рядом друг с другом</div></div><span class="chevron">›</span>
+      </button>
+      <button class="tile glass" id="noteTile">
+        <div class="tile-icon">📷</div><div class="tile-copy"><div class="tile-title">поделиться моментом</div><div class="tile-desc">фото, мысли и маленькие события дня</div></div><span class="chevron">›</span>
+      </button>
+      <div class="section-head"><h3>наши дни</h3></div>
+      <div class="couple-photos">
+        <div class="couple-photo glass">
+          <div class="couple-photo-frame" id="homePhotoMe"><div class="couple-photo-placeholder">♡</div></div>
+          <div class="couple-photo-label">Я</div>
         </div>
-
-        <!-- ЭКРАН 3: ПРИСУТСТВИЕ -->
-        <div id="scr-touch" class="hidden flex flex-col items-center justify-center h-full space-y-6 pt-10">
-            <p class="text-xs text-purple-300 max-w-xs text-center leading-relaxed">Когда ей тяжело или одиноко, зажми эту сферу. Её экран мягко начнет пульсировать теплом.</p>
-            <div ontouchstart="startPulse()" ontouchend="endPulse()" class="w-40 h-40 rounded-full glass-panel flex items-center justify-center cursor-pointer shadow-[0_0_40px_rgba(168,85,247,0.15)] border border-purple-500/30 active:scale-95 transition-all duration-300">
-                <div class="w-28 h-28 rounded-full bg-gradient-to-tr from-purple-600/20 to-pink-500/20 border border-purple-400/40 flex items-center justify-center text-3xl animate-pulse">🌌</div>
-            </div>
-            <p id="pulse-status" class="text-[10px] uppercase tracking-wider text-purple-500">Режим ожидания</p>
+        <div class="couple-photo glass">
+          <div class="couple-photo-frame" id="homePhotoPartner"><div class="couple-photo-placeholder">♡</div></div>
+          <div class="couple-photo-label">Ты</div>
         </div>
+      </div>
+    </section>
 
-        <!-- ЭКРАН 4: ПЛАНЫ -->
-        <div id="scr-future" class="hidden space-y-3">
-            <div class="glass-panel p-4 rounded-xl flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 rounded-full bg-pink-500 shadow-[0_0_8px_#d946ef]"></div>
-                    <span class="text-xs text-purple-200">Встретить вместе рассвет на крыше</span>
-                </div>
-                <span class="text-xs opacity-40">⏳</span>
-            </div>
-            <div class="glass-panel p-4 rounded-xl flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]"></div>
-                    <span class="text-xs text-purple-200">Приготовить огромную лазанью</span>
-                </div>
-                <span class="text-xs opacity-40">⏳</span>
-            </div>
-        </div>
+    <section class="screen" id="scr-capsule">
+      <div class="section-head" style="margin-top:4px"><h3>Моменты дня</h3><span id="dailyCount">0 из 4 фото</span></div>
+      <p class="empty-hint">Сохраняйте маленькие кусочки своего дня. Каждый день — до четырёх фотографий. На следующий день они автоматически уйдут в историю.</p>
+      <div class="upload-panel glass">
+        <div class="upload-symbol">＋</div>
+        <div class="upload-title">Добавить фотографии</div>
+        <div class="upload-caption">Можно выбрать до четырёх снимков за сегодня</div>
+        <input id="photoInput" type="file" accept="image/*" multiple hidden>
+        <button class="primary-btn" id="choosePhotos">Выбрать фото</button>
+      </div>
+      <div id="todayPhotos" class="photo-grid"></div>
+      <div class="section-head"><h3>Наша история</h3><span id="historyCount">пока пусто</span></div>
+      <p class="empty-hint">Фотографии прошлых дней будут храниться здесь по датам.</p>
+      <div id="historyList" class="history-list"></div>
+    </section>
 
-    </div>
+    <section class="screen" id="scr-touch">
+      <div class="section-head" style="justify-content:center;margin-top:5px"><h3>Почувствуй, что мы рядом</h3></div>
+      <div class="touch-wrap">
+        <p class="touch-intro">Коснись и удерживай сферу. Пусть экран мягко отзовётся, словно мы держимся за руки.</p>
+        <button class="touch-orb" id="touchOrb" aria-label="Нажми и удерживай, чтобы передать тепло"><span class="inner">♡</span></button>
+        <div class="pulse-status" id="pulseStatus">коснись, чтобы передать тепло</div>
+        <p class="small-note">Сейчас это визуальная демоверсия на одном устройстве. Чтобы касания появлялись на обоих телефонах, позже подключим синхронизацию.</p>
+      </div>
+      <button class="tile glass" id="touchSend"><div class="tile-icon">✨</div><div class="tile-copy"><div class="tile-title">Отправить маленький знак</div><div class="tile-desc">Пусть мы помним друг о друге</div></div><span class="chevron">›</span></button>
+    </section>
 
-    <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (КАК НА СКРИНШОТЕ 3) -->
-    <div class="fixed bottom-4 left-4 right-4 h-16 rounded-2xl glass-panel z-50 flex justify-around items-center px-2 shadow-2xl">
-        <button onclick="navTo('home')" id="btn-home" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400 active-nav">
-            <span class="text-lg">🌌</span>
-            <span>Главная</span>
-        </button>
-        <button onclick="navTo('capsule')" id="btn-capsule" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400">
-            <span class="text-lg">🔮</span>
-            <span>Капсула</span>
-        </button>
-        <button onclick="navTo('touch')" id="btn-touch" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400">
-            <span class="text-lg">✨</span>
-            <span>Тепло</span>
-        </button>
-        <button onclick="navTo('future')" id="btn-future" class="flex flex-col items-center gap-1 text-[10px] font-medium transition-all text-purple-400">
-            <span class="text-lg">⏳</span>
-            <span>Планы</span>
-        </button>
-    </div>
+    <section class="screen" id="scr-future">
+      <div class="section-head" style="margin-top:4px"><h3>Когда-нибудь вместе</h3><span>наши планы</span></div>
+      <p class="empty-hint">Мечты становятся ближе, когда мы записываем их вместе.</p>
+      <div id="planList">
+        <div class="plan-item glass"><span class="plan-dot"></span><div class="plan-text">Встретить рассвет и никуда не спешить</div><span class="plan-state">♡</span></div>
+        <div class="plan-item glass"><span class="plan-dot"></span><div class="plan-text">Приготовить огромную лазанью</div><span class="plan-state">♡</span></div>
+        <div class="plan-item glass"><span class="plan-dot"></span><div class="plan-text">Выбрать город и просто гулять весь день</div><span class="plan-state">♡</span></div>
+      </div>
+      <button class="add-card glass" id="addPlan"><span>＋ &nbsp; Добавить нашу мечту</span><span>✧</span></button>
+    </section>
+  </main>
+</div>
 
-    <script>
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-            tg.expand();
-            tg.ready();
-            // Подтягиваем имя пользователя из ТГ
-            const user = tg.initDataUnsafe?.user;
-            if (user?.first_name) {
-                document.getElementById('user-greeting').innerText = user.first_name;
-            }
-        }
+<nav class="bottom-nav" aria-label="Основная навигация">
+  <button class="nav-btn active" data-go="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1Z"/></svg><span>Главная</span></button>
+  <button class="nav-btn" data-go="capsule"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M20.8 8.8c0 5.3-8.8 10.1-8.8 10.1S3.2 14.1 3.2 8.8A4.3 4.3 0 0 1 12 6.9a4.3 4.3 0 0 1 8.8 1.9Z"/></svg><span>Моменты</span></button>
+  <button class="nav-btn" data-go="touch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 14 9l6 3-6 2-2 7-2-7-6-2 6-3Z"/></svg><span>Касания</span></button>
+  <button class="nav-btn" data-go="future"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="m4 7 8 6 8-6"/></svg><span>Наши планы</span></button>
+</nav>
 
-        function navTo(screenId) {
-            ['home', 'capsule', 'touch', 'future'].forEach(s => {
-                document.getElementById(`scr-${s}`).classList.add('hidden');
-                document.getElementById(`btn-${s}`).classList.remove('active-nav');
-            });
-            document.getElementById(`scr-${screenId}`).classList.remove('hidden');
-            document.getElementById(`btn-${screenId}`).classList.add('active-nav');
-            tg?.HapticFeedback?.impactOccurred('light');
-        }
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h3 id="modalTitle">Добавить</h3><p id="modalDesc">Сохраним это маленькое воспоминание.</p>
+    <input class="field" id="modalTitleInput" maxlength="70" placeholder="Название">
+    <textarea class="field" id="modalBodyInput" maxlength="220" rows="3" placeholder="Пара тёплых слов (необязательно)"></textarea>
+    <div class="modal-actions"><button class="secondary-btn" id="modalCancel">Отмена</button><button class="primary-btn" id="modalSave">Сохранить</button></div>
+  </div>
+</div>
 
-        function sendHeart() {
-            tg?.HapticFeedback?.notificationOccurred('success');
-            // Эмуляция отправки данных в Телеграм-бот
-            if (tg) {
-                tg.sendData(JSON.stringify({action: "remember_click", time: new Date().toLocaleTimeString()}));
-            } else {
-                alert("Лучи тепла отправлены! (В браузере)");
-            }
-        }
+<script>
+(() => {
+  const tg = window.Telegram && window.Telegram.WebApp;
+  try { if (tg) { tg.ready(); tg.expand(); } } catch (_) {}
+  const $ = (id) => document.getElementById(id);
+  const screens = ['home','capsule','touch','future'];
+  let toastTimer, modalMode = 'memory';
+  function toast(message) {
+    const el = $('toast'); el.textContent = message; el.classList.add('show');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove('show'), 2400);
+  }
+  function haptic(kind='light') { try { tg?.HapticFeedback?.impactOccurred(kind); } catch (_) {} }
+  function navTo(id) {
+    if (!screens.includes(id)) return;
+    screens.forEach(s => $('scr-'+s).classList.toggle('active', s === id));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.go === id));
+    $('content').scrollTop = 0; haptic(); 
+  }
+  document.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => navTo(b.dataset.go)));
+  function sendSign(type) {
+    haptic('medium');
+    const messages = {heart:'Объятие на расстоянии — мы рядом ♡', note:'Можно оставить тёплые слова в следующем шаге ✉', touch:'Тепло между нами ♡'};
+    toast(messages[type] || 'Маленький знак внимания ♡');
+    // Здесь пока только локальная демоверсия. Telegram sendData передаёт данные боту,
+    // но сам по себе не доставляет событие другому пользователю.
+    try { if (tg && typeof tg.sendData === 'function') tg.sendData(JSON.stringify({action:'affection',type,time:new Date().toISOString()})); } catch (_) {}
+  }
+  $('heroTouch').addEventListener('click', () => { navTo('touch'); sendSign('touch'); });
+  $('heartTile').addEventListener('click', () => sendSign('heart'));
+  $('touchSend').addEventListener('click', () => sendSign('touch'));
+  $('noteTile').addEventListener('click', () => navTo('capsule'));
 
-        function startPulse() {
-            document.getElementById('pulse-status').innerText = 'Отправка тепла...';
-            document.getElementById('pulse-status').classList.remove('text-purple-500');
-            document.getElementById('pulse-status').classList.add('text-pink-400');
-            tg?.HapticFeedback?.impactOccurred('medium');
-            }
-            document.addEventListener('touchend', endPulse);
-        function endPulse() {
-        const status = document.getElementById('pulse-status');
-        if(status) {
-            status.innerText = 'Режим ожидания';
-            status.classList.remove('text-pink-400');
-            status.classList.add('text-purple-500');
-            }
-         }
+  const orb = $('touchOrb'), status = $('pulseStatus');
+  let holding = false;
+  function startHold(e) {
+    if (holding) return; holding = true; e.preventDefault();
+    orb.classList.add('pressing'); status.textContent = 'передаю тебе тепло…'; status.style.color = '#f0c7f4'; haptic('medium');
+    try { if (orb.setPointerCapture && e.pointerId !== undefined) orb.setPointerCapture(e.pointerId); } catch (_) {}
+  }
+  function endHold() {
+    if (!holding) return; holding = false; orb.classList.remove('pressing'); status.textContent = 'коснись, чтобы передать тепло'; status.style.color = '';
+    try { if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } catch (_) {}
+  }
+  orb.addEventListener('pointerdown', startHold);
+  orb.addEventListener('pointerup', endHold);
+  orb.addEventListener('pointercancel', endHold);
+  orb.addEventListener('lostpointercapture', endHold);
+  window.addEventListener('pointerup', endHold);
+
+  function openModal(mode) {
+    modalMode = mode;
+    $('modalTitle').textContent = mode === 'plan' ? 'Наша новая мечта' : mode === 'note' ? 'Тёплое сообщение' : 'Новое воспоминание';
+    $('modalDesc').textContent = mode === 'plan' ? 'Запишите то, что однажды захотите сделать вместе.' : mode === 'note' ? 'Оставь пару тёплых слов для нашего пространства.' : 'Сохраним момент, к которому приятно вернуться.';
+    $('modalTitleInput').value = '';
+    $('modalBodyInput').value = '';
+    $('modalTitleInput').placeholder = mode === 'plan' ? 'Что сделаем вместе?' : mode === 'note' ? 'Короткий заголовок' : 'Название момента';
+    $('modalBodyInput').placeholder = mode === 'plan' ? 'Подробности (необязательно)' : mode === 'note' ? 'Напиши пару тёплых слов…' : 'Почему это важно?';
+    $('modalBackdrop').classList.add('open');
+    setTimeout(() => $('modalTitleInput').focus(), 100);
+  }
+  function closeModal() { $('modalBackdrop').classList.remove('open'); }
+  $('addPlan').addEventListener('click', () => openModal('plan'));
+  $('modalCancel').addEventListener('click', closeModal);
+  $('modalBackdrop').addEventListener('click', e => { if (e.target === $('modalBackdrop')) closeModal(); });
+  $('modalSave').addEventListener('click', () => {
+    const title = $('modalTitleInput').value.trim(), body = $('modalBodyInput').value.trim();
+    if (!title) { toast('Добавь название, чтобы сохранить ♡'); $('modalTitleInput').focus(); return; }
+    if (modalMode === 'plan') {
+      const item = document.createElement('div'); item.className = 'plan-item glass';
+      const dot = document.createElement('span'); dot.className = 'plan-dot';
+      const text = document.createElement('div'); text.className = 'plan-text'; text.textContent = title + (body ? ' — ' + body : '');
+      const state = document.createElement('span'); state.className = 'plan-state'; state.textContent = '♡';
+      item.append(dot,text,state); $('planList').append(item);
+    } else if (modalMode === 'memory') {
+      const item = document.createElement('article'); item.className = 'memory-card glass';
+      const top = document.createElement('div');
+      const date = document.createElement('div'); date.className = 'memory-date'; date.textContent = 'только что';
+      const emoji = document.createElement('div'); emoji.className = 'memory-emoji'; emoji.textContent = '💜';
+      top.append(date,emoji);
+      const bottom = document.createElement('div');
+      const name = document.createElement('div'); name.className = 'memory-title'; name.textContent = title;
+      const desc = document.createElement('div'); desc.className = 'memory-desc'; desc.textContent = body || 'Маленькая часть нашей истории.';
+      bottom.append(name,desc); item.append(top,bottom); $('memoryList').prepend(item);
+    } else {
+      toast('Тёплые слова подготовлены ♡');
+      try { if (tg?.sendData) tg.sendData(JSON.stringify({action:'note_draft',title,body,time:new Date().toISOString()})); } catch (_) {}
+      closeModal(); return;
+    }
+    closeModal(); toast(modalMode === 'plan' ? 'Мечта добавлена ♡' : 'Воспоминание сохранено ♡'); haptic();
+  });
+  $('modalTitleInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('modalSave').click(); });
+
+  // Daily moments: four photos per local calendar day. Yesterday's photos move to history.
+  const STORAGE_KEY = 'our-space-daily-photos-v1';
+  const todayKey = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+  function readPhotoStore() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"days":{}}'); }
+    catch (_) { return {days:{}}; }
+  }
+  function writePhotoStore(store) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); return true; }
+    catch (_) { toast('Не удалось сохранить фото. Попробуй выбрать снимки меньшего размера.'); return false; }
+  }
+  function compressImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const maxSide = 1200, scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(img.width * scale));
+          canvas.height = Math.max(1, Math.round(img.height * scale));
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          resolve(canvas.toDataURL('image/jpeg', .78));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function formatDay(key) {
+    const [y,m,d] = key.split('-').map(Number);
+    return new Date(y,m-1,d).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+  }
+  function escapeText(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function renderPhotos() {
+    const store = readPhotoStore(), today = todayKey();
+    // Any previous date is automatically displayed in history, not in today's gallery.
+    const todays = store.days[today] || [];
+    const meFrame = $('homePhotoMe'), partnerFrame = $('homePhotoPartner');
+    if (meFrame) meFrame.innerHTML = todays[0] ? `<img src="${todays[0].data}" alt="Фото за сегодня">` : '<div class="couple-photo-placeholder">♡</div>';
+    if (partnerFrame) partnerFrame.innerHTML = todays[1] ? `<img src="${todays[1].data}" alt="Фото за сегодня">` : '<div class="couple-photo-placeholder">♡</div>';
+    $('dailyCount').textContent = `${todays.length} из 4 фото`;
+    $('choosePhotos').disabled = todays.length >= 4;
+    $('choosePhotos').style.opacity = todays.length >= 4 ? '.5' : '1';
+    const todayBox = $('todayPhotos'); todayBox.innerHTML = '';
+    if (!todays.length) {
+      const empty = document.createElement('div'); empty.className = 'history-empty'; empty.style.gridColumn = '1 / -1';
+      empty.textContent = 'Здесь появятся фотографии, которыми мы захотим поделиться сегодня.';
+      todayBox.append(empty);
+    } else {
+      todays.forEach((photo, index) => {
+        const card = document.createElement('div'); card.className = 'photo-item';
+        const img = document.createElement('img'); img.src = photo.data; img.alt = 'Момент дня';
+        const label = document.createElement('div'); label.className = 'photo-label'; label.textContent = photo.time || 'Сегодня';
+        const remove = document.createElement('button'); remove.className = 'photo-remove'; remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label','Удалить фото');
+        remove.addEventListener('click', () => {
+          const current = readPhotoStore(); current.days[today] = (current.days[today] || []).filter((_, i) => i !== index);
+          if (!current.days[today].length) delete current.days[today];
+          if (writePhotoStore(current)) { renderPhotos(); toast('Фото удалено'); }
+        });
+        card.append(img,label,remove); todayBox.append(card);
+      });
+    }
+    const history = Object.keys(store.days).filter(k => k < today && store.days[k]?.length).sort((a,b) => b.localeCompare(a));
+    $('historyCount').textContent = history.length ? `${history.length} ${history.length === 1 ? 'день' : 'дней'}` : 'пока пусто';
+    const historyBox = $('historyList'); historyBox.innerHTML = '';
+    if (!history.length) {
+      const empty = document.createElement('div'); empty.className = 'history-empty glass'; empty.textContent = 'Здесь будут храниться моменты предыдущих дней. Новая дата начнётся автоматически.';
+      historyBox.append(empty);
+    } else {
+      history.forEach(day => {
+        const wrap = document.createElement('section'); wrap.className = 'history-day glass';
+        const head = document.createElement('div'); head.className = 'history-day-head';
+        const title = document.createElement('div'); title.className = 'history-day-title'; title.textContent = formatDay(day);
+        const count = document.createElement('div'); count.className = 'history-day-count'; count.textContent = `${store.days[day].length} фото`;
+        head.append(title,count);
+        const thumbs = document.createElement('div'); thumbs.className = 'history-thumbs';
+        store.days[day].forEach(photo => {
+          const thumb = document.createElement('div'); thumb.className = 'history-thumb';
+          const img = document.createElement('img'); img.src = photo.data; img.alt = 'Фото из истории'; thumb.append(img); thumbs.append(thumb);
+        });
+        wrap.append(head,thumbs); historyBox.append(wrap);
+      });
+    }
+  }
+  $('choosePhotos').addEventListener('click', () => {
+    const count = (readPhotoStore().days[todayKey()] || []).length;
+    if (count >= 4) { toast('На сегодня уже есть четыре фотографии ♡'); return; }
+    $('photoInput').click();
+  });
+  $('photoInput').addEventListener('change', async (event) => {
+    const files = Array.from(event.target.files || []).filter(f => f.type.startsWith('image/'));
+    event.target.value = '';
+    if (!files.length) return;
+    const store = readPhotoStore(), key = todayKey(), current = store.days[key] || [];
+    const allowed = files.slice(0, Math.max(0, 4 - current.length));
+    if (!allowed.length) { toast('На сегодня уже есть четыре фотографии ♡'); return; }
+    if (allowed.length < files.length) toast('Добавим только фото, помещающиеся в лимит на сегодня.');
+    try {
+      for (const file of allowed) {
+        const data = await compressImage(file);
+        current.push({data, time:new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})});
+      }
+      store.days[key] = current;
+      if (writePhotoStore(store)) { renderPhotos(); toast('Момент добавлен ♡'); haptic(); }
+    } catch (_) { toast('Не получилось прочитать одно из изображений. Попробуй другое фото.'); }
+  });
+  renderPhotos();
+
+  // Telegram's actual name is used only when available.
+  try {
+    const user = tg?.initDataUnsafe?.user;
+    if (user?.first_name) document.title = 'Наше пространство';
+  } catch (_) {}
+})();
+</script>
+</body>
+</html>
