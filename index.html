@@ -110,8 +110,16 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .touch-intro{max-width:310px;margin:0 auto 26px;font-size:13px;line-height:1.6;color:var(--muted)}
 .touch-orb{width:190px;height:190px;margin:0 auto 21px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(224,197,255,.42);background:radial-gradient(circle,rgba(209,169,255,.22),rgba(255,255,255,.035) 65%);box-shadow:0 0 55px rgba(176,130,255,.16),inset 0 0 32px rgba(224,197,255,.10);cursor:pointer;touch-action:none;user-select:none;transition:box-shadow .25s,transform .25s}
 .touch-orb .inner{width:130px;height:130px;border-radius:50%;display:grid;place-items:center;font-size:49px;background:radial-gradient(circle at 35% 25%,rgba(238,204,255,.45),rgba(169,121,239,.14) 55%,rgba(255,255,255,.04));border:1px solid rgba(236,214,255,.42);box-shadow:0 0 35px rgba(195,147,255,.25)}
-.touch-orb.pressing{transform:scale(.96);box-shadow:0 0 80px rgba(231,165,255,.52),inset 0 0 45px rgba(255,214,255,.24)}
-.pulse-status{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#d8bdff}
+.touch-orb{position:relative;isolation:isolate;overflow:visible}
+.touch-orb::before,.touch-orb::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(246,197,255,0);opacity:0;pointer-events:none;z-index:-1}
+.touch-orb.pressing{transform:scale(.94);box-shadow:0 0 34px rgba(231,165,255,.95),0 0 90px rgba(231,165,255,.72),inset 0 0 55px rgba(255,214,255,.48);animation:orbPress .95s ease-in-out infinite alternate}
+.touch-orb.pressing::before{border-color:rgba(248,203,255,.9);animation:touchRipple 1.25s ease-out infinite;opacity:1}
+.touch-orb.pressing::after{border-color:rgba(255,174,224,.72);animation:touchRipple 1.25s ease-out .48s infinite;opacity:1}
+.touch-orb.pressing .inner{background:radial-gradient(circle at 35% 25%,rgba(255,235,255,.9),rgba(211,145,255,.42) 55%,rgba(255,178,224,.22));box-shadow:0 0 50px rgba(244,177,255,.85);animation:heartBeat .72s ease-in-out infinite alternate}
+@keyframes orbPress{from{filter:brightness(1);transform:scale(.94)}to{filter:brightness(1.28);transform:scale(1.015)}}
+@keyframes touchRipple{0%{transform:scale(.94);opacity:.9}100%{transform:scale(1.55);opacity:0}}
+@keyframes heartBeat{from{transform:scale(.96)}to{transform:scale(1.12)}}\n  .touch-orb.partner-waiting{animation:partnerGlow 1.4s ease-in-out infinite}\n  .touch-orb.together{animation:togetherGlow .8s ease-in-out infinite alternate}\n  @keyframes partnerGlow{0%,100%{box-shadow:0 0 32px rgba(238,160,255,.25)}50%{box-shadow:0 0 78px rgba(238,160,255,.82)}}\n  @keyframes togetherGlow{from{transform:scale(.98);box-shadow:0 0 65px rgba(255,155,205,.65)}to{transform:scale(1.04);box-shadow:0 0 110px rgba(255,185,230,.95)}}\n  .nav-btn.touch-waiting{animation:partnerGlow 1.4s ease-in-out infinite;background:rgba(242,175,222,.15)}\n  .touch-notice{display:none;margin:0 auto 16px;padding:10px 15px;max-width:300px;border:1px solid rgba(255,203,231,.42);border-radius:16px;background:rgba(255,220,239,.12);color:#ffe6f4;font-size:13px;line-height:1.45;animation:noticeIn .35s ease-out}\n  .touch-notice.show{display:block}\n  @keyframes noticeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.pulse-status{position:relative;width:auto;height:auto;overflow:visible;clip-path:none;white-space:normal;max-width:300px;min-height:38px;margin:0 auto;font-size:13px;line-height:1.6;color:#75636d;letter-spacing:0;text-transform:none;padding:0 12px}
 .small-note{font-size:11px;color:#aa98c8;line-height:1.5;margin:15px auto 0;max-width:290px}
 .plan-item{display:flex;align-items:center;gap:12px;padding:15px;border-radius:18px}
 .plan-item+.plan-item{margin-top:10px}
@@ -413,12 +421,11 @@ h1{color:#35272f}
     </section>
 
     <section class="screen" id="scr-touch">
-      <div class="section-head" style="justify-content:center;margin-top:5px"><h3>Касания</h3></div>
       <div class="touch-wrap">
         <p class="touch-intro">Зажмите круг одновременно на своих телефонах. Когда вы оба будете держать его, появится общая анимация и телефоны завибрируют.</p>
-        <button class="touch-orb" id="touchOrb" aria-label="Нажми и удерживай круг"><span class="inner">♡</span></button>
-        <div class="pulse-status" id="pulseStatus">ожидаем, когда вы будете готовы</div>
-        <p class="small-note">Совместное касание заработает после подключения общего сервера. Пока сервер не подключён, одиночное нажатие не вызывает вибрацию и не имитирует совместное событие.</p>
+        <div class="touch-notice" id="touchNotice" role="status"></div>
+        <button class="touch-orb" id="touchOrb" aria-label="Нажми и удерживай сферу"><span class="inner">♡</span></button>
+        <div class="pulse-status" id="pulseStatus" aria-live="polite">ожидаем, когда вы будете готовы</div>
       </div>
     </section>
 
@@ -635,8 +642,7 @@ h1{color:#35272f}
   function renderPlans(plans) {
     const list = $('planList');
     list.innerHTML = '';
-    const showingTemplate = !plans.length;
-    if (showingTemplate) plans = [{ id: 'preview-plan-template', title: 'Устроить вечер только для нас', description: 'Выбрать фильм, приготовить что-нибудь вкусное и провести вечер рядом, даже если нас разделяют километры. ♡', is_completed: false, is_template: true }];
+    // Не подставляем демонстрационный план: пустой список остаётся пустым.
     plans.forEach(plan => {
       const item = document.createElement('div');
       item.className = 'plan-item glass' + (plan.is_completed ? ' completed' : '');
@@ -759,21 +765,86 @@ h1{color:#35272f}
   $('heartTile').addEventListener('click', () => navTo('future'));
   $('touchTile').addEventListener('click', () => navTo('capsule'));
 
-  const orb = $('touchOrb'), status = $('pulseStatus');
-  let holding = false;
+  const orb = $('touchOrb'), status = $('pulseStatus'), touchNotice = $('touchNotice');
+  let holding = false, partnerTouch = false, togetherTouch = false;
+  let touchPingTimer = null, touchPollTimer = null, lastTogetherHaptic = 0;
+  function touchAction(action) {
+    if (!telegramVerified || !tg?.initData) return Promise.resolve(null);
+    return fetch(`${SUPABASE_URL}/functions/v1/pekarna-api`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+      },
+      body: JSON.stringify({ action, initData: tg.initData })
+    }).then(async response => {
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Не удалось передать прикосновение');
+      return result;
+    });
+  }
+  async function pollPartnerTouch() {
+    if (!telegramVerified || document.visibilityState !== 'visible') return;
+    try {
+      const result = await touchAction('touch_status');
+      if (!result) return;
+      partnerTouch = !!result.partner_touch;
+      const nowTogether = holding && partnerTouch;
+      orb.classList.toggle('partner-waiting', partnerTouch && !holding);
+      orb.classList.toggle('together', nowTogether);
+      touchNotice.classList.toggle('show', partnerTouch && !holding);
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        if (b.dataset.go === 'touch') b.classList.toggle('touch-waiting', partnerTouch && !holding);
+      });
+      if (nowTogether && !togetherTouch && Date.now() - lastTogetherHaptic > 1500) {
+        haptic('medium');
+        lastTogetherHaptic = Date.now();
+      }
+      togetherTouch = nowTogether;
+      if (nowTogether) status.textContent = 'вы чувствуете друг друга ♡';
+      else if (holding) status.textContent = 'ты посылаешь ей прикосновение…';
+      else if (partnerTouch) status.textContent = 'тебя ждут у сферы ♡';
+      else { status.textContent = 'нажми и удерживай, чтобы послать прикосновение'; status.style.color = ''; }
+    } catch (error) { console.warn('Touch status unavailable:', error); }
+  }
   function startHold(e) {
-    if (holding) return; holding = true; e.preventDefault();
-    orb.classList.add('pressing'); status.textContent = 'ты удерживаешь касание…'; status.style.color = '#f0c7f4';
+    if (holding) return;
+    holding = true;
+    if (e.cancelable) e.preventDefault();
+    orb.classList.add('pressing');
+    status.textContent = 'ты посылаешь тепло…';
+    status.style.color = '#75636d';
+    touchAction('touch_start').catch(error => console.warn('Touch start failed:', error));
+    if (touchPingTimer) clearInterval(touchPingTimer);
+    touchPingTimer = setInterval(() => touchAction('touch_ping').catch(error => console.warn('Touch ping failed:', error)), 1000);
     try { if (orb.setPointerCapture && e.pointerId !== undefined) orb.setPointerCapture(e.pointerId); } catch (_) {}
   }
   function endHold() {
-    if (!holding) return; holding = false; orb.classList.remove('pressing'); status.textContent = 'ожидаем, когда вы будете готовы'; status.style.color = '';
+    if (!holding) return;
+    holding = false;
+    orb.classList.remove('pressing', 'together');
+    if (touchPingTimer) { clearInterval(touchPingTimer); touchPingTimer = null; }
+    touchAction('touch_stop').catch(error => console.warn('Touch stop failed:', error));
+    status.textContent = partnerTouch ? 'тебя ждут у сферы ♡' : 'нажми и удерживай, чтобы послать прикосновение';
+    status.style.color = '';
   }
   orb.addEventListener('pointerdown', startHold);
   orb.addEventListener('pointerup', endHold);
   orb.addEventListener('pointercancel', endHold);
   orb.addEventListener('lostpointercapture', endHold);
   window.addEventListener('pointerup', endHold);
+  window.addEventListener('blur', endHold);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') endHold();
+    else pollPartnerTouch();
+  });
+  window.addEventListener('pagehide', () => {
+    if (holding) { holding = false; touchAction('touch_stop').catch(() => {}); }
+    if (touchPingTimer) clearInterval(touchPingTimer);
+  });
+  touchPollTimer = setInterval(pollPartnerTouch, 850);
+  pollPartnerTouch();
 
   // Обработчики планов создаются при загрузке данных из Supabase.
 
