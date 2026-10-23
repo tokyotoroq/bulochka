@@ -154,6 +154,11 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .history-thumb{aspect-ratio:1;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.05)}
 .history-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .history-empty{padding:16px;border-radius:18px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
+.photo-item img,.history-thumb img,.couple-photo-frame img{cursor:zoom-in}
+.photo-lightbox{position:fixed;inset:0;z-index:100;background:rgba(8,5,15,.96);display:none;align-items:center;justify-content:center;padding:56px 12px 20px}
+.photo-lightbox.open{display:flex}
+.photo-lightbox img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:8px}
+.photo-lightbox-close{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;width:42px;height:42px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:28px;line-height:1;cursor:pointer}
 
 
 .share-photos-btn{width:100%;margin:12px 0 4px}
@@ -262,6 +267,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии"><button class="photo-lightbox-close" id="photoLightboxClose" type="button" aria-label="Закрыть">×</button><img id="photoLightboxImage" alt="Фотография в полном размере"></div>
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <h3 id="modalTitle">Добавить</h3><p id="modalDesc">Сохраним это маленькое воспоминание.</p>
@@ -276,6 +282,11 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   const tg = window.Telegram && window.Telegram.WebApp;
   try { if (tg) { tg.ready(); tg.expand(); } } catch (_) {}
   const $ = (id) => document.getElementById(id);
+  function openPhoto(src, alt='Фотография') { if (!src) return; $('photoLightboxImage').src = src; $('photoLightboxImage').alt = alt; $('photoLightbox').classList.add('open'); }
+  function closePhoto() { $('photoLightbox').classList.remove('open'); $('photoLightboxImage').removeAttribute('src'); }
+  $('photoLightboxClose').addEventListener('click', closePhoto);
+  $('photoLightbox').addEventListener('click', e => { if (e.target === $('photoLightbox')) closePhoto(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePhoto(); });
 
   // Проверяем Telegram и отправляем сигнал активности в Supabase.
   // Статус «онлайн» означает, что мини-приложение открыто и связь с сервером работает.
@@ -574,8 +585,8 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     const meFrame = $('homePhotoMe'), partnerFrame = $('homePhotoPartner');
     const myPhoto = todays.find(photo => String(photo.author_telegram_id) === String(tg?.initDataUnsafe?.user?.id));
     const partnerPhoto = todays.find(photo => String(photo.author_telegram_id) !== String(tg?.initDataUnsafe?.user?.id));
-    if (meFrame) meFrame.innerHTML = myPhoto ? `<img src="${myPhoto.signed_url}" alt="Мой кадр дня">` : '<div class="couple-photo-placeholder">♡</div>';
-    if (partnerFrame) partnerFrame.innerHTML = partnerPhoto ? `<img src="${partnerPhoto.signed_url}" alt="Кадр партнёра">` : '<div class="couple-photo-placeholder">♡</div>';
+    if (meFrame) { meFrame.innerHTML = myPhoto ? `<img src="${myPhoto.signed_url}" alt="Мой кадр дня">` : '<div class="couple-photo-placeholder">♡</div>'; if (myPhoto) meFrame.querySelector('img').addEventListener('click', () => openPhoto(myPhoto.signed_url, 'Мой кадр дня')); }
+    if (partnerFrame) { partnerFrame.innerHTML = partnerPhoto ? `<img src="${partnerPhoto.signed_url}" alt="Кадр партнёра">` : '<div class="couple-photo-placeholder">♡</div>'; if (partnerPhoto) partnerFrame.querySelector('img').addEventListener('click', () => openPhoto(partnerPhoto.signed_url, 'Кадр партнёра')); }
     $('dailyCount').textContent = `${todays.length} из 4 фото`;
     $('choosePhotos').disabled = todays.length >= 4;
     $('choosePhotos').style.opacity = todays.length >= 4 ? '.5' : '1';
@@ -587,7 +598,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     } else {
       todays.forEach(photo => {
         const card = document.createElement('div'); card.className = 'photo-item';
-        const img = document.createElement('img'); img.src = photo.signed_url; img.alt = 'Момент дня';
+        const img = document.createElement('img'); img.src = photo.signed_url; img.alt = 'Момент дня'; img.addEventListener('click', () => openPhoto(photo.signed_url, 'Момент дня'));
         const label = document.createElement('div'); label.className = 'photo-label';
         const authorId = String(photo.author_telegram_id);
         label.textContent = `${authorId === String(tg?.initDataUnsafe?.user?.id) ? 'Ты' : 'Любимый человек'} · ${new Date(photo.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
@@ -615,7 +626,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
         const count = document.createElement('div'); count.className = 'history-day-count'; count.textContent = `${dayPhotos.length} фото`;
         head.append(title,count);
         const thumbs = document.createElement('div'); thumbs.className = 'history-thumbs';
-        dayPhotos.forEach(photo => { const thumb = document.createElement('div'); thumb.className = 'history-thumb'; const img = document.createElement('img'); img.src = photo.signed_url; img.alt = 'Фото из истории'; thumb.append(img); thumbs.append(thumb); });
+        dayPhotos.forEach(photo => { const thumb = document.createElement('div'); thumb.className = 'history-thumb'; const img = document.createElement('img'); img.src = photo.signed_url; img.alt = 'Фото из истории'; thumb.addEventListener('click', () => openPhoto(photo.signed_url, 'Фото из истории')); thumb.append(img); thumbs.append(thumb); });
         wrap.append(head,thumbs); historyBox.append(wrap);
       });
     }
