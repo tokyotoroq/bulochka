@@ -281,10 +281,40 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   try { if (tg) { tg.ready(); tg.expand(); } } catch (_) {}
   const $ = (id) => document.getElementById(id);
 
-  // Проверяем подлинность данных Telegram через Edge Function.
-  // Публичный ключ предназначен для клиента; секреты здесь не хранятся.
+  // Проверяем Telegram и отправляем сигнал активности в Supabase.
+  // Статус «онлайн» означает, что мини-приложение открыто и связь с сервером работает.
   const SUPABASE_URL = 'https://eordyxuehntpkuddgdmk.supabase.co';
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_0hQRI4Uhl9-6bG-wUUgCXg_WUoeogXz';
+  let telegramVerified = false;
+  let heartbeatTimer = null;
+
+  function setMyStatus(state, message) {
+    const statusEl = $('myAccountStatus');
+    const dotClass = state === 'online' ? 'status-dot online' : 'status-dot';
+    statusEl.innerHTML = `<span class="${dotClass}"></span>${message}`;
+  }
+
+  async function sendHeartbeat() {
+    if (!telegramVerified || !tg?.initData) return;
+    try {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/pekarna-api`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+        },
+        body: JSON.stringify({ action: 'heartbeat', initData: tg.initData })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Сигнал не принят');
+      setMyStatus('online', 'в сети');
+    } catch (error) {
+      console.error('Presence heartbeat failed:', error);
+      setMyStatus('offline', 'нет связи с сервером');
+    }
+  }
+
   async function verifyTelegramAccount() {
     const nameEl = $('myAccountName');
     const statusEl = $('myAccountStatus');
@@ -315,13 +345,21 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.error || 'Проверка не пройдена');
-      nameEl.textContent = result.user?.first_name || nameEl.textContent;
-      statusEl.innerHTML = '<span class="status-dot online"></span>Telegram подтверждён';
+      nameEl.textContent = [result.user?.first_name, result.user?.last_name].filter(Boolean).join(' ') || nameEl.textContent;
+      telegramVerified = true;
+      await sendHeartbeat();
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
+      heartbeatTimer = setInterval(sendHeartbeat, 20000);
     } catch (error) {
       console.error('Telegram verification failed:', error);
-      statusEl.innerHTML = '<span class="status-dot"></span>не удалось подтвердить';
+      setMyStatus('offline', 'не удалось подтвердить');
     }
   }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') sendHeartbeat();
+  });
+  window.addEventListener('focus', sendHeartbeat);
   verifyTelegramAccount();
   const screens = ['home','capsule','touch','future'];
   let toastTimer, modalMode = 'memory';
