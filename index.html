@@ -155,10 +155,10 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .history-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .history-empty{padding:16px;border-radius:18px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
 .photo-item img,.history-thumb img,.couple-photo-frame img{cursor:zoom-in}
-.photo-lightbox{position:fixed;inset:0;z-index:100;background:rgba(8,5,15,.96);display:none;align-items:center;justify-content:center;padding:56px 12px 20px}
+.photo-lightbox{position:fixed;inset:0;z-index:1000;background:#050408;display:none;align-items:center;justify-content:center;padding:0;overflow:hidden;touch-action:none}
 .photo-lightbox.open{display:flex}
-.photo-lightbox img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:8px}
-.photo-lightbox-close{position:absolute;top:calc(12px + env(safe-area-inset-top));right:14px;width:42px;height:42px;border:1px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.12);color:#fff;font-size:28px;line-height:1;cursor:pointer}
+.photo-lightbox img{display:block;max-width:100vw;max-height:100dvh;width:auto;height:auto;object-fit:contain;border-radius:0;transform:scale(1);transform-origin:center center;user-select:none;-webkit-user-drag:none;touch-action:none}
+.photo-lightbox-close{position:absolute;z-index:2;top:calc(12px + env(safe-area-inset-top));right:14px;width:44px;height:44px;border:1px solid rgba(255,255,255,.5);border-radius:50%;background:rgba(0,0,0,.58);backdrop-filter:blur(8px);color:#fff;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 2px 14px #0008}
 
 
 .share-photos-btn{width:100%;margin:12px 0 4px}
@@ -282,10 +282,67 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   const tg = window.Telegram && window.Telegram.WebApp;
   try { if (tg) { tg.ready(); tg.expand(); } } catch (_) {}
   const $ = (id) => document.getElementById(id);
-  function openPhoto(src, alt='Фотография') { if (!src) return; $('photoLightboxImage').src = src; $('photoLightboxImage').alt = alt; $('photoLightbox').classList.add('open'); }
-  function closePhoto() { $('photoLightbox').classList.remove('open'); $('photoLightboxImage').removeAttribute('src'); }
+  let photoZoom = 1, photoX = 0, photoY = 0;
+  const photoImage = $('photoLightboxImage');
+  const photoBox = $('photoLightbox');
+  const activePointers = new Map();
+  let pinchStartDistance = 0, pinchStartZoom = 1, dragStartX = 0, dragStartY = 0, dragOriginX = 0, dragOriginY = 0;
+  function applyPhotoTransform() {
+    photoImage.style.transform = `translate(${photoX}px, ${photoY}px) scale(${photoZoom})`;
+  }
+  function setPhotoZoom(value) {
+    photoZoom = Math.max(1, Math.min(5, value));
+    if (photoZoom === 1) { photoX = 0; photoY = 0; }
+    applyPhotoTransform();
+  }
+  function pointerDistance() {
+    const p = [...activePointers.values()];
+    return p.length < 2 ? 0 : Math.hypot(p[0].x-p[1].x, p[0].y-p[1].y);
+  }
+  function openPhoto(src, alt='Фотография') {
+    if (!src) return;
+    photoZoom = 1; photoX = 0; photoY = 0; applyPhotoTransform();
+    photoImage.src = src; photoImage.alt = alt;
+    photoBox.classList.add('open'); document.body.style.overflow = 'hidden';
+  }
+  function closePhoto() {
+    photoBox.classList.remove('open'); photoImage.removeAttribute('src');
+    document.body.style.overflow = ''; photoZoom = 1; photoX = 0; photoY = 0; activePointers.clear(); applyPhotoTransform();
+  }
   $('photoLightboxClose').addEventListener('click', closePhoto);
-  $('photoLightbox').addEventListener('click', e => { if (e.target === $('photoLightbox')) closePhoto(); });
+  photoBox.addEventListener('pointerdown', e => {
+    if (e.target === $('photoLightboxClose')) return;
+    activePointers.set(e.pointerId, {x:e.clientX,y:e.clientY});
+    try { photoBox.setPointerCapture(e.pointerId); } catch (_) {}
+    if (activePointers.size === 1) {
+      dragStartX=e.clientX; dragStartY=e.clientY; dragOriginX=photoX; dragOriginY=photoY;
+    } else if (activePointers.size === 2) {
+      pinchStartDistance=pointerDistance(); pinchStartZoom=photoZoom;
+    }
+  });
+  photoBox.addEventListener('pointermove', e => {
+    if (!activePointers.has(e.pointerId)) return;
+    activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if (activePointers.size >= 2) {
+      const d=pointerDistance(); if (pinchStartDistance) setPhotoZoom(pinchStartZoom * d / pinchStartDistance);
+    } else if (photoZoom > 1) {
+      photoX=dragOriginX + e.clientX-dragStartX; photoY=dragOriginY + e.clientY-dragStartY; applyPhotoTransform();
+    }
+  });
+  function endPhotoPointer(e) {
+    activePointers.delete(e.pointerId);
+    if (activePointers.size === 1) {
+      const p=[...activePointers.values()][0]; dragStartX=p.x; dragStartY=p.y; dragOriginX=photoX; dragOriginY=photoY;
+    } else if (activePointers.size === 0) pinchStartDistance=0;
+  }
+  photoBox.addEventListener('pointerup',endPhotoPointer);
+  photoBox.addEventListener('pointercancel',endPhotoPointer);
+  photoImage.addEventListener('dblclick', e => { e.preventDefault(); setPhotoZoom(photoZoom > 1 ? 1 : 2); });
+  photoBox.addEventListener('wheel', e => {
+    if (!photoBox.classList.contains('open')) return;
+    e.preventDefault(); setPhotoZoom(photoZoom + (e.deltaY < 0 ? .2 : -.2));
+  }, {passive:false});
+  photoBox.addEventListener('click', e => { if (e.target === photoBox) closePhoto(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closePhoto(); });
 
   // Проверяем Telegram и отправляем сигнал активности в Supabase.
