@@ -155,27 +155,34 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .history-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .history-empty{padding:16px;border-radius:18px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
 .photo-item img,.history-thumb img,.couple-photo-frame img{cursor:zoom-in}
-.photo-lightbox{position:fixed;inset:0;z-index:1000;background:#050408;display:none;align-items:center;justify-content:center;padding:0;overflow:hidden;touch-action:none}
+.photo-lightbox{position:fixed;inset:0;z-index:1000;background:radial-gradient(ellipse at 50% 35%,rgba(119,79,166,.97),rgba(54,35,82,.985) 58%,rgba(35,23,54,.99));display:none;align-items:center;justify-content:center;padding:16px;overflow:hidden;touch-action:none}
 .photo-lightbox.open{display:flex}
-.photo-lightbox img{display:block;max-width:100vw;max-height:100dvh;width:auto;height:auto;object-fit:contain;border-radius:0;transform:scale(1);transform-origin:center center;user-select:none;-webkit-user-drag:none;touch-action:none}
+.photo-lightbox img{display:block;max-width:calc(100vw - 52px);max-height:calc(100dvh - 100px);width:auto;height:auto;object-fit:contain;border-radius:12px;border:1px solid rgba(239,220,255,.55);padding:5px;background:linear-gradient(145deg,rgba(238,218,255,.14),rgba(123,83,167,.2));box-shadow:0 18px 55px rgba(15,5,29,.42),0 0 0 5px rgba(219,190,255,.07);transform:scale(1);transform-origin:center center;user-select:none;-webkit-user-drag:none;touch-action:none}
 .photo-lightbox-close{position:absolute;z-index:2;top:calc(12px + env(safe-area-inset-top));right:14px;width:44px;height:44px;border:1px solid rgba(255,255,255,.5);border-radius:50%;background:rgba(0,0,0,.58);backdrop-filter:blur(8px);color:#fff;font-size:30px;line-height:1;cursor:pointer;box-shadow:0 2px 14px #0008}
+.photo-zoom-controls{position:absolute;z-index:2;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:7px;border:1px solid #ffffff40;border-radius:28px;background:#0009;backdrop-filter:blur(10px)}
+.photo-zoom-controls button{width:42px;height:42px;border:0;border-radius:50%;background:#ffffff20;color:#fff;font-size:25px;cursor:pointer}
+.photo-zoom-controls span{min-width:48px;text-align:center;color:#fff;font-size:13px}
 
 
 .share-photos-btn{width:100%;margin:12px 0 4px}
 .touch-state{display:flex;align-items:center;justify-content:center;gap:9px;max-width:330px;margin:0 auto;padding:12px 14px;border-radius:15px;font-size:11px;color:#e4d4ff;line-height:1.4}
-.plan-item{align-items:flex-start}
-.plan-check{appearance:none;-webkit-appearance:none;width:21px;height:21px;border:1px solid rgba(226,204,255,.55);border-radius:7px;background:rgba(255,255,255,.04);margin:1px 0 0;flex:none;cursor:pointer;position:relative}
-.plan-check:checked{background:#c9a5ff;border-color:#e5d1ff}
-.plan-check:checked:after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#2b1d42;font-size:14px;font-weight:700}
-.plan-content{flex:1;min-width:0}
-.plan-title-button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;border:1px solid rgba(213,186,255,.28);background:rgba(213,186,255,.09);padding:11px 12px;border-radius:12px;color:#fff4ff;font-size:16px;font-weight:600;line-height:1.4;cursor:pointer;min-height:46px}
+.plan-item{display:block;padding:13px;border-radius:19px}
+.plan-content{min-width:0;flex:1;width:auto}
+.plan-top-row{display:flex;align-items:stretch;gap:8px;width:100%}
+.plan-title-button{width:100%;height:100%;min-height:66px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;border:1px solid rgba(213,186,255,.3);background:rgba(213,186,255,.11);padding:13px 14px;border-radius:14px;color:#fff4ff;font-size:18px;font-weight:750;line-height:1.35;cursor:pointer}
 .plan-title-text{flex:1;min-width:0;overflow-wrap:anywhere}
 .plan-chevron{color:#f0ddff;background:rgba(213,186,255,.17);border:1px solid rgba(213,186,255,.25);border-radius:8px;display:grid;place-items:center;flex:none;width:28px;height:28px;font-size:20px;line-height:1;transition:transform .2s,background .2s}
-.plan-description{display:none;font-size:14px;color:#f0e8fa;line-height:1.7;padding:12px 12px 3px;overflow-wrap:anywhere;white-space:pre-wrap}
+.plan-description{display:none;font-size:14px;color:#e9def6;line-height:1.65;padding:13px 14px;margin-top:8px;border:1px solid rgba(226,204,255,.12);border-radius:12px;background:rgba(255,255,255,.035);overflow-wrap:anywhere;white-space:pre-wrap}
 .plan-item.expanded .plan-description{display:block}
 .plan-item.expanded .plan-chevron{transform:rotate(180deg);background:rgba(213,186,255,.28)}
-.plan-item.completed .plan-title-button{color:#b9a9d1;text-decoration:line-through}
-.plan-item.completed{opacity:.72}
+.plan-actions{display:flex;flex:0 0 116px;flex-direction:column;gap:6px;align-self:stretch}
+.plan-action{flex:1;min-width:0;min-height:0;border:1px solid rgba(226,204,255,.2);border-radius:12px;padding:5px 7px;font-size:11px;font-weight:600;line-height:1.2;cursor:pointer;color:#f4eaff;background:rgba(255,255,255,.055)}
+.plan-action.complete{background:rgba(201,165,255,.13);border-color:rgba(213,186,255,.35)}
+.plan-action.complete.is-completed{color:#d5c4ed;background:rgba(201,165,255,.07)}
+.plan-action.delete{flex:1 1 0;color:#e7c9d7;background:rgba(207,110,145,.08);border-color:rgba(207,110,145,.22);min-width:0}
+.plan-item.completed .plan-title-button{color:#d2c2e6}
+.plan-item.completed .plan-title-text{text-decoration:line-through;text-decoration-color:rgba(210,194,230,.65)}
+.plan-item.completed{opacity:.84}
 
 @media(min-width:560px){.shell{padding-left:22px;padding-right:22px}.hero{min-height:155px}.content{padding-bottom:110px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
@@ -267,7 +274,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div class="photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии"><button class="photo-lightbox-close" id="photoLightboxClose" type="button" aria-label="Закрыть">×</button><img id="photoLightboxImage" alt="Фотография в полном размере"></div>
+<div class="photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии"><button class="photo-lightbox-close" id="photoLightboxClose" type="button" aria-label="Закрыть">×</button><img id="photoLightboxImage" alt="Фотография в полном размере"><div class="photo-zoom-controls" aria-label="Масштаб фотографии"><button id="photoZoomOut" type="button" aria-label="Уменьшить">−</button><span id="photoZoomLevel">100%</span><button id="photoZoomIn" type="button" aria-label="Увеличить">+</button></div></div>
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <h3 id="modalTitle">Добавить</h3><p id="modalDesc">Сохраним это маленькое воспоминание.</p>
@@ -282,68 +289,40 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   const tg = window.Telegram && window.Telegram.WebApp;
   try { if (tg) { tg.ready(); tg.expand(); } } catch (_) {}
   const $ = (id) => document.getElementById(id);
-  let photoZoom = 1, photoX = 0, photoY = 0;
+  let photoZoom = 1;
   const photoImage = $('photoLightboxImage');
-  const photoBox = $('photoLightbox');
-  const activePointers = new Map();
-  let pinchStartDistance = 0, pinchStartZoom = 1, dragStartX = 0, dragStartY = 0, dragOriginX = 0, dragOriginY = 0;
-  function applyPhotoTransform() {
-    photoImage.style.transform = `translate(${photoX}px, ${photoY}px) scale(${photoZoom})`;
-  }
   function setPhotoZoom(value) {
-    photoZoom = Math.max(1, Math.min(5, value));
-    if (photoZoom === 1) { photoX = 0; photoY = 0; }
-    applyPhotoTransform();
-  }
-  function pointerDistance() {
-    const p = [...activePointers.values()];
-    return p.length < 2 ? 0 : Math.hypot(p[0].x-p[1].x, p[0].y-p[1].y);
+    photoZoom = Math.max(1, Math.min(4, value));
+    photoImage.style.transform = `scale(${photoZoom})`;
+    $('photoZoomLevel').textContent = `${Math.round(photoZoom * 100)}%`;
+    $('photoZoomOut').disabled = photoZoom <= 1;
+    $('photoZoomOut').style.opacity = photoZoom <= 1 ? '.45' : '1';
+    $('photoZoomIn').disabled = photoZoom >= 4;
+    $('photoZoomIn').style.opacity = photoZoom >= 4 ? '.45' : '1';
   }
   function openPhoto(src, alt='Фотография') {
     if (!src) return;
-    photoZoom = 1; photoX = 0; photoY = 0; applyPhotoTransform();
-    photoImage.src = src; photoImage.alt = alt;
-    photoBox.classList.add('open'); document.body.style.overflow = 'hidden';
+    setPhotoZoom(1); photoImage.src = src; photoImage.alt = alt;
+    $('photoLightbox').classList.add('open'); document.body.style.overflow = 'hidden';
   }
   function closePhoto() {
-    photoBox.classList.remove('open'); photoImage.removeAttribute('src');
-    document.body.style.overflow = ''; photoZoom = 1; photoX = 0; photoY = 0; activePointers.clear(); applyPhotoTransform();
+    $('photoLightbox').classList.remove('open'); photoImage.removeAttribute('src');
+    document.body.style.overflow = ''; setPhotoZoom(1);
   }
   $('photoLightboxClose').addEventListener('click', closePhoto);
-  photoBox.addEventListener('pointerdown', e => {
-    if (e.target === $('photoLightboxClose')) return;
-    activePointers.set(e.pointerId, {x:e.clientX,y:e.clientY});
-    try { photoBox.setPointerCapture(e.pointerId); } catch (_) {}
-    if (activePointers.size === 1) {
-      dragStartX=e.clientX; dragStartY=e.clientY; dragOriginX=photoX; dragOriginY=photoY;
-    } else if (activePointers.size === 2) {
-      pinchStartDistance=pointerDistance(); pinchStartZoom=photoZoom;
-    }
-  });
-  photoBox.addEventListener('pointermove', e => {
-    if (!activePointers.has(e.pointerId)) return;
-    activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
-    if (activePointers.size >= 2) {
-      const d=pointerDistance(); if (pinchStartDistance) setPhotoZoom(pinchStartZoom * d / pinchStartDistance);
-    } else if (photoZoom > 1) {
-      photoX=dragOriginX + e.clientX-dragStartX; photoY=dragOriginY + e.clientY-dragStartY; applyPhotoTransform();
-    }
-  });
-  function endPhotoPointer(e) {
-    activePointers.delete(e.pointerId);
-    if (activePointers.size === 1) {
-      const p=[...activePointers.values()][0]; dragStartX=p.x; dragStartY=p.y; dragOriginX=photoX; dragOriginY=photoY;
-    } else if (activePointers.size === 0) pinchStartDistance=0;
-  }
-  photoBox.addEventListener('pointerup',endPhotoPointer);
-  photoBox.addEventListener('pointercancel',endPhotoPointer);
-  photoImage.addEventListener('dblclick', e => { e.preventDefault(); setPhotoZoom(photoZoom > 1 ? 1 : 2); });
-  photoBox.addEventListener('wheel', e => {
-    if (!photoBox.classList.contains('open')) return;
-    e.preventDefault(); setPhotoZoom(photoZoom + (e.deltaY < 0 ? .2 : -.2));
+  $('photoZoomIn').addEventListener('click', () => setPhotoZoom(photoZoom + .5));
+  $('photoZoomOut').addEventListener('click', () => setPhotoZoom(photoZoom - .5));
+  photoImage.addEventListener('dblclick', () => setPhotoZoom(photoZoom > 1 ? 1 : 2));
+  $('photoLightbox').addEventListener('wheel', e => {
+    if (!$('photoLightbox').classList.contains('open')) return;
+    e.preventDefault(); setPhotoZoom(photoZoom + (e.deltaY < 0 ? .25 : -.25));
   }, {passive:false});
-  photoBox.addEventListener('click', e => { if (e.target === photoBox) closePhoto(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePhoto(); });
+  $('photoLightbox').addEventListener('click', e => { if (e.target === $('photoLightbox')) closePhoto(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePhoto();
+    if ($('photoLightbox').classList.contains('open') && (e.key === '+' || e.key === '=')) setPhotoZoom(photoZoom + .5);
+    if ($('photoLightbox').classList.contains('open' ) && e.key === '-') setPhotoZoom(photoZoom - .5);
+  });
 
   // Проверяем Telegram и отправляем сигнал активности в Supabase.
   // Статус «онлайн» означает, что мини-приложение открыто и связь с сервером работает.
@@ -399,43 +378,53 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
       const item = document.createElement('div');
       item.className = 'plan-item glass' + (plan.is_completed ? ' completed' : '');
       item.dataset.planId = plan.id;
-      const check = document.createElement('input');
-      check.type = 'checkbox'; check.className = 'plan-check';
-      check.checked = !!plan.is_completed;
-      check.setAttribute('aria-label', 'Отметить план выполненным');
+
       const content = document.createElement('div'); content.className = 'plan-content';
       const titleButton = document.createElement('button');
       titleButton.type = 'button'; titleButton.className = 'plan-title-button';
       const titleText = document.createElement('span'); titleText.className = 'plan-title-text'; titleText.textContent = plan.title;
       const chevron = document.createElement('span'); chevron.className = 'plan-chevron'; chevron.textContent = '⌄';
       titleButton.append(titleText, chevron);
+
       const description = document.createElement('div');
       description.className = 'plan-description';
       description.textContent = plan.description || 'Описание пока не добавлено.';
       titleButton.addEventListener('click', () => item.classList.toggle('expanded'));
-      check.addEventListener('change', async () => {
-        check.disabled = true;
+      const topRow = document.createElement('div'); topRow.className = 'plan-top-row';
+      content.append(titleButton);
+      topRow.append(content);
+
+      const actions = document.createElement('div'); actions.className = 'plan-actions';
+      const complete = document.createElement('button');
+      complete.type = 'button'; complete.className = 'plan-action complete' + (plan.is_completed ? ' is-completed' : '');
+      complete.textContent = plan.is_completed ? '✓ Выполнено' : 'Отметить выполненным';
+      complete.setAttribute('aria-label', plan.is_completed ? 'Снять отметку выполнения' : 'Отметить план выполненным');
+      complete.addEventListener('click', async () => {
+        complete.disabled = true;
         try {
-          await apiRequest('update_plan', { plan_id: plan.id, is_completed: check.checked });
-          item.classList.toggle('completed', check.checked);
-          toast(check.checked ? 'План отмечен выполненным ♡' : 'Отметка снята');
-        } catch (error) {
-          check.checked = !check.checked;
-          toast(error.message || 'Не удалось обновить план');
-        } finally { check.disabled = false; }
+          const nextState = !item.classList.contains('completed');
+          await apiRequest('update_plan', { plan_id: plan.id, is_completed: nextState });
+          item.classList.toggle('completed', nextState);
+          complete.classList.toggle('is-completed', nextState);
+          complete.textContent = nextState ? '✓ Выполнено' : 'Отметить выполненным';
+          complete.setAttribute('aria-label', nextState ? 'Снять отметку выполнения' : 'Отметить план выполненным');
+          toast(nextState ? 'План отмечен выполненным ♡' : 'Отметка снята');
+        } catch (error) { toast(error.message || 'Не удалось обновить план'); }
+        finally { complete.disabled = false; }
       });
+
       const remove = document.createElement('button');
-      remove.type = 'button'; remove.className = 'plan-delete'; remove.textContent = '×';
+      remove.type = 'button'; remove.className = 'plan-action delete'; remove.textContent = 'Удалить';
       remove.setAttribute('aria-label', 'Удалить план');
-      remove.style.cssText = 'border:1px solid var(--line);background:rgba(255,255,255,.05);color:#eadbff;border-radius:10px;width:30px;height:30px;flex:none;font-size:19px;cursor:pointer';
       remove.addEventListener('click', async () => {
         if (!confirm('Удалить этот план?')) return;
         remove.disabled = true;
         try { await apiRequest('delete_plan', { plan_id: plan.id }); await loadPlans(); toast('План удалён'); }
         catch (error) { remove.disabled = false; toast(error.message || 'Не удалось удалить план'); }
       });
-      content.append(titleButton, description);
-      item.append(check, content, remove);
+      actions.append(complete, remove);
+      topRow.append(actions);
+      item.append(topRow, description);
       list.append(item);
     });
   }
@@ -642,7 +631,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     const meFrame = $('homePhotoMe'), partnerFrame = $('homePhotoPartner');
     const myPhoto = todays.find(photo => String(photo.author_telegram_id) === String(tg?.initDataUnsafe?.user?.id));
     const partnerPhoto = todays.find(photo => String(photo.author_telegram_id) !== String(tg?.initDataUnsafe?.user?.id));
-    if (meFrame) { meFrame.innerHTML = myPhoto ? `<img src="${myPhoto.signed_url}" alt="Пекарь">` : '<div class="couple-photo-placeholder">♡</div>'; if (myPhoto) meFrame.querySelector('img').addEventListener('click', () => openPhoto(myPhoto.signed_url, 'Пекарь')); }
+    if (meFrame) { meFrame.innerHTML = myPhoto ? `<img src="${myPhoto.signed_url}" alt="Мой кадр дня">` : '<div class="couple-photo-placeholder">♡</div>'; if (myPhoto) meFrame.querySelector('img').addEventListener('click', () => openPhoto(myPhoto.signed_url, 'Мой кадр дня')); }
     if (partnerFrame) { partnerFrame.innerHTML = partnerPhoto ? `<img src="${partnerPhoto.signed_url}" alt="Кадр партнёра">` : '<div class="couple-photo-placeholder">♡</div>'; if (partnerPhoto) partnerFrame.querySelector('img').addEventListener('click', () => openPhoto(partnerPhoto.signed_url, 'Кадр партнёра')); }
     $('dailyCount').textContent = `${todays.length} из 4 фото`;
     $('choosePhotos').disabled = todays.length >= 4;
