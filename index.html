@@ -248,11 +248,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     <section class="screen" id="scr-future">
       <div class="section-head" style="margin-top:4px"><h3>Когда-нибудь</h3></div>
       <p class="empty-hint">Мечты становятся ближе, когда мы записываем их вместе.</p>
-      <div id="planList">
-        <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Встретить рассвет и никуда не спешить <span>⌄</span></button><div class="plan-description">Найти красивое место, взять что-нибудь вкусное и никуда не торопиться.</div></div></div>
-        <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Приготовить огромную лазанью <span>⌄</span></button><div class="plan-description">Выбрать рецепт, вместе сходить за продуктами и устроить домашний вечер.</div></div></div>
-        <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Выбрать город и просто гулять весь день <span>⌄</span></button><div class="plan-description">Погулять без строгого маршрута, найти уютное кафе и сделать фотографии.</div></div></div>
-      </div>
+      <div id="planList"></div>
       <button class="add-card glass" id="addPlan"><span>Идеи нашего будущего</span><span>✧</span></button>
     </section>
   </main>
@@ -287,6 +283,82 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_0hQRI4Uhl9-6bG-wUUgCXg_WUoeogXz';
   let telegramVerified = false;
   let heartbeatTimer = null;
+
+  async function apiRequest(action, extra = {}) {
+    if (!tg?.initData) throw new Error('Открой приложение через Telegram');
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/pekarna-api`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+      },
+      body: JSON.stringify({ action, initData: tg.initData, ...extra })
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) throw new Error(result.error || 'Не удалось связаться с сервером');
+    return result;
+  }
+
+  async function loadPlans() {
+    if (!telegramVerified) return;
+    try {
+      const result = await apiRequest('list_plans');
+      renderPlans(result.plans || []);
+    } catch (error) {
+      console.error('Plan loading failed:', error);
+      toast(error.message || 'Не удалось загрузить планы');
+    }
+  }
+
+  function renderPlans(plans) {
+    const list = $('planList');
+    list.innerHTML = '';
+    if (!plans.length) return;
+    plans.forEach(plan => {
+      const item = document.createElement('div');
+      item.className = 'plan-item glass' + (plan.is_completed ? ' completed' : '');
+      item.dataset.planId = plan.id;
+      const check = document.createElement('input');
+      check.type = 'checkbox'; check.className = 'plan-check';
+      check.checked = !!plan.is_completed;
+      check.setAttribute('aria-label', 'Отметить план выполненным');
+      const content = document.createElement('div'); content.className = 'plan-content';
+      const titleButton = document.createElement('button');
+      titleButton.type = 'button'; titleButton.className = 'plan-title-button';
+      const titleText = document.createElement('span'); titleText.textContent = plan.title;
+      const chevron = document.createElement('span'); chevron.textContent = '⌄';
+      titleButton.append(titleText, chevron);
+      const description = document.createElement('div');
+      description.className = 'plan-description';
+      description.textContent = plan.description || 'Описание пока не добавлено.';
+      titleButton.addEventListener('click', () => item.classList.toggle('expanded'));
+      check.addEventListener('change', async () => {
+        check.disabled = true;
+        try {
+          await apiRequest('update_plan', { plan_id: plan.id, is_completed: check.checked });
+          item.classList.toggle('completed', check.checked);
+          toast(check.checked ? 'План отмечен выполненным ♡' : 'Отметка снята');
+        } catch (error) {
+          check.checked = !check.checked;
+          toast(error.message || 'Не удалось обновить план');
+        } finally { check.disabled = false; }
+      });
+      const remove = document.createElement('button');
+      remove.type = 'button'; remove.className = 'plan-delete'; remove.textContent = '×';
+      remove.setAttribute('aria-label', 'Удалить план');
+      remove.style.cssText = 'border:1px solid var(--line);background:rgba(255,255,255,.05);color:#eadbff;border-radius:10px;width:30px;height:30px;flex:none;font-size:19px;cursor:pointer';
+      remove.addEventListener('click', async () => {
+        if (!confirm('Удалить этот план?')) return;
+        remove.disabled = true;
+        try { await apiRequest('delete_plan', { plan_id: plan.id }); await loadPlans(); toast('План удалён'); }
+        catch (error) { remove.disabled = false; toast(error.message || 'Не удалось удалить план'); }
+      });
+      content.append(titleButton, description);
+      item.append(check, content, remove);
+      list.append(item);
+    });
+  }
 
   function setMyStatus(state, message) {
     const statusEl = $('myAccountStatus');
@@ -348,6 +420,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
       nameEl.textContent = [result.user?.first_name, result.user?.last_name].filter(Boolean).join(' ') || nameEl.textContent;
       telegramVerified = true;
       await sendHeartbeat();
+      await loadPlans();
       if (heartbeatTimer) clearInterval(heartbeatTimer);
       heartbeatTimer = setInterval(sendHeartbeat, 20000);
     } catch (error) {
@@ -403,15 +476,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   orb.addEventListener('lostpointercapture', endHold);
   window.addEventListener('pointerup', endHold);
 
-  document.querySelectorAll('.plan-title-button').forEach(btn => {
-    btn.addEventListener('click', () => btn.closest('.plan-item').classList.toggle('expanded'));
-  });
-  document.querySelectorAll('.plan-check').forEach(check => {
-    check.addEventListener('change', () => {
-      check.closest('.plan-item').classList.toggle('completed', check.checked);
-      toast(check.checked ? 'План отмечен выполненным ♡' : 'Отметка снята');
-    });
-  });
+  // Обработчики планов создаются при загрузке данных из Supabase.
 
   function openModal(mode) {
     modalMode = mode;
@@ -428,20 +493,21 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   $('addPlan').addEventListener('click', () => openModal('plan'));
   $('modalCancel').addEventListener('click', closeModal);
   $('modalBackdrop').addEventListener('click', e => { if (e.target === $('modalBackdrop')) closeModal(); });
-  $('modalSave').addEventListener('click', () => {
+  $('modalSave').addEventListener('click', async () => {
     const title = $('modalTitleInput').value.trim(), body = $('modalBodyInput').value.trim();
     if (!title) { toast('Добавь название, чтобы сохранить ♡'); $('modalTitleInput').focus(); return; }
     if (modalMode === 'plan') {
-      const item = document.createElement('div'); item.className = 'plan-item glass';
-      const check = document.createElement('input'); check.type = 'checkbox'; check.className = 'plan-check'; check.setAttribute('aria-label','Отметить план выполненным');
-      const content = document.createElement('div'); content.className = 'plan-content';
-      const titleButton = document.createElement('button'); titleButton.type = 'button'; titleButton.className = 'plan-title-button';
-      const titleText = document.createElement('span'); titleText.textContent = title;
-      const chevron = document.createElement('span'); chevron.textContent = '⌄'; titleButton.append(titleText, chevron);
-      const description = document.createElement('div'); description.className = 'plan-description'; description.textContent = body || 'Описание пока не добавлено.';
-      titleButton.addEventListener('click', () => item.classList.toggle('expanded'));
-      check.addEventListener('change', () => { item.classList.toggle('completed', check.checked); toast(check.checked ? 'План отмечен выполненным ♡' : 'Отметка снята'); });
-      content.append(titleButton, description); item.append(check, content); $('planList').append(item);
+      const saveButton = $('modalSave');
+      saveButton.disabled = true;
+      try {
+        await apiRequest('add_plan', { title, description: body });
+        closeModal();
+        await loadPlans();
+        toast('Мечта добавлена ♡'); haptic();
+      } catch (error) {
+        toast(error.message || 'Не удалось сохранить план');
+      } finally { saveButton.disabled = false; }
+      return;
     } else if (modalMode === 'memory') {
       const item = document.createElement('article'); item.className = 'memory-card glass';
       const top = document.createElement('div');
