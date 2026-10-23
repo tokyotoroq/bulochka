@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#211638">
 <title>Наша пекарня с булочками</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{
   --bg:#211638; --bg2:#30204b; --lav:#d9c4ff; --lav2:#b99aff;
@@ -47,7 +48,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .screen{display:none;animation:fade .22s ease}
 .screen.active{display:block}
 @keyframes fade{from{opacity:.5;transform:translateY(4px)}to{opacity:1;transform:none}}
-.hero{position:relative;min-height:244px;border:1px solid rgba(222,197,255,.34);border-radius:25px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px 20px;background:
+.hero{position:relative;min-height:135px;border:1px solid rgba(222,197,255,.34);border-radius:25px;overflow:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:14px 16px;background:
  radial-gradient(ellipse at 50% 95%,rgba(244,174,245,.55),transparent 32%),
  radial-gradient(ellipse at 20% 20%,rgba(162,120,235,.6),transparent 45%),
  radial-gradient(ellipse at 85% 30%,rgba(114,102,210,.52),transparent 42%),
@@ -64,9 +65,19 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .hero-content{position:relative;z-index:1}
 .eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#e7d8ff}
 .hero h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(34px,9vw,47px);margin:9px 0 8px;text-shadow:0 3px 24px rgba(24,12,47,.28)}
-.hero p{margin:0 auto 17px;max-width:250px;color:#f1e7ff;font-size:13px;line-height:1.5}
-.primary-btn{border:1px solid rgba(255,255,255,.36);border-radius:999px;padding:11px 19px;background:linear-gradient(120deg,rgba(189,143,255,.92),rgba(219,151,239,.86));box-shadow:0 6px 24px rgba(179,123,255,.24);color:#fff;font-weight:600;font-size:13px;cursor:pointer;transition:transform .15s}
+.hero p{margin:0 auto 10px;max-width:250px;color:#f1e7ff;font-size:13px;line-height:1.5}
+.primary-btn{border:1px solid rgba(255,255,255,.36);border-radius:999px;padding:9px 16px;background:linear-gradient(120deg,rgba(189,143,255,.92),rgba(219,151,239,.86));box-shadow:0 6px 24px rgba(179,123,255,.24);color:#fff;font-weight:600;font-size:13px;cursor:pointer;transition:transform .15s}
 .primary-btn:active,.tile:active,.nav-btn:active{transform:scale(.98)}
+.account-strip{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:0 1px 10px}
+.account-card{display:flex;align-items:center;gap:7px;min-width:0;padding:6px 8px;border-radius:13px}
+.account-avatar{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;flex:none;background:rgba(205,170,255,.2);border:1px solid var(--line);font-size:16px;overflow:hidden}
+.account-avatar img{width:100%;height:100%;object-fit:cover}
+.account-copy{min-width:0}
+.account-name{font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.account-status{font-size:9px;color:var(--muted);margin-top:3px}
+.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#b7a5cf;margin-right:4px}
+.status-dot.online{background:#9ee6bd;box-shadow:0 0 7px rgba(158,230,189,.55)}
+.gallery-section{margin-top:24px;padding-top:2px}
 .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:23px 2px 12px}
 .section-head h3{font-family:Georgia,"Times New Roman",serif;font-size:20px;font-weight:400;color:#eadbff;margin:0}
 .section-head span{font-size:11px;color:var(--muted)}
@@ -160,7 +171,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .plan-item.completed .plan-title-button{color:#b9a9d1;text-decoration:line-through}
 .plan-item.completed{opacity:.72}
 
-@media(min-width:560px){.shell{padding-left:22px;padding-right:22px}.hero{min-height:290px}.content{padding-bottom:110px}}
+@media(min-width:560px){.shell{padding-left:22px;padding-right:22px}.hero{min-height:155px}.content{padding-bottom:110px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -176,29 +187,33 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 
   <main class="content" id="content">
     <section class="screen active" id="scr-home">
+      <div class="account-strip" aria-label="Наши аккаунты">
+        <div class="account-card glass"><div class="account-avatar" id="myAvatar">♡</div><div class="account-copy"><div class="account-name" id="myAccountName">Я</div><div class="account-status" id="myAccountStatus"><span class="status-dot"></span>проверяем Telegram</div></div></div>
+        <div class="account-card glass"><div class="account-avatar" id="partnerAvatar">♡</div><div class="account-copy"><div class="account-name" id="partnerAccountName">Ты</div><div class="account-status" id="partnerAccountStatus"><span class="status-dot"></span>аккаунт не привязан</div></div></div>
+      </div>
       <div class="hero">
         <div class="moon"></div><div class="horizon"></div>
         <div class="hero-content">
           <p>даже когда между нами километры, мы можем быть ближе.</p>
-          <button class="primary-btn" id="heroTouch"><span aria-hidden="true" style="margin-right:7px;font-size:14px">♡</span>Передать тепло</button>
+          <button class="primary-btn" id="heroTouch"><span aria-hidden="true" style="margin-right:7px;font-size:14px">♡</span>передать тепло</button>
         </div>
       </div>
-      <div class="section-head"><h3>маленькие моменты</h3><span>наше общее пространство</span></div>
+      <div class="section-head"><h3>маленькие моменты</h3></div>
       <button class="tile glass" id="heartTile">
-        <div class="tile-icon">✧</div><div class="tile-copy"><div class="tile-title">поделиться планом</div><div class="tile-desc">добавить идею для нашего будущего</div></div><span class="chevron">›</span>
+        <div class="tile-icon">✧</div><div class="tile-copy"><div class="tile-title">поделиться планами</div><div class="tile-desc">идеи для нашего будущего</div></div><span class="chevron">›</span>
       </button>
       <button class="tile glass" id="touchTile">
         <div class="tile-icon"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5.5" width="18" height="14" rx="2.5"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5.5 9.5 3.5h5L16 5.5"/></svg></div><div class="tile-copy"><div class="tile-title">поделиться моментом</div><div class="tile-desc">маленькие события дня</div></div><span class="chevron">›</span>
       </button>
       
-      <div class="couple-photos">
+      <div class="couple-photos gallery-section">
         <div class="couple-photo glass">
           <div class="couple-photo-frame" id="homePhotoMe"><div class="couple-photo-placeholder">♡</div></div>
-          <div class="couple-photo-label">Я</div>
+          <div class="couple-photo-label">Мой кадр дня</div>
         </div>
         <div class="couple-photo glass">
           <div class="couple-photo-frame" id="homePhotoPartner"><div class="couple-photo-placeholder">♡</div></div>
-          <div class="couple-photo-label">Ты</div>
+          <div class="couple-photo-label">Твой кадр дня</div>
         </div>
       </div>
     </section>
@@ -238,7 +253,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
         <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Приготовить огромную лазанью <span>⌄</span></button><div class="plan-description">Выбрать рецепт, вместе сходить за продуктами и устроить домашний вечер.</div></div></div>
         <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Выбрать город и просто гулять весь день <span>⌄</span></button><div class="plan-description">Погулять без строгого маршрута, найти уютное кафе и сделать фотографии.</div></div></div>
       </div>
-      <button class="add-card glass" id="addPlan"><span>＋ &nbsp; Добавить нашу мечту</span><span>✧</span></button>
+      <button class="add-card glass" id="addPlan"><span>Идеи нашего будущего</span><span>✧</span></button>
     </section>
   </main>
 </div>
@@ -265,6 +280,49 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   const tg = window.Telegram && window.Telegram.WebApp;
   try { if (tg) { tg.ready(); tg.expand(); } } catch (_) {}
   const $ = (id) => document.getElementById(id);
+
+  // Проверяем подлинность данных Telegram через Edge Function.
+  // Публичный ключ предназначен для клиента; секреты здесь не хранятся.
+  const SUPABASE_URL = 'https://eordyxuehntpkuddgdmk.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_0hQRI4Uhl9-6bG-wUUgCXg_WUoeogXz';
+  async function verifyTelegramAccount() {
+    const nameEl = $('myAccountName');
+    const statusEl = $('myAccountStatus');
+    const avatarEl = $('myAvatar');
+    const user = tg?.initDataUnsafe?.user;
+    if (user) {
+      nameEl.textContent = [user.first_name, user.last_name].filter(Boolean).join(' ') || 'Я';
+      if (user.photo_url) avatarEl.innerHTML = `<img src="${String(user.photo_url).replace(/&/g, '&amp;').replace(/"/g, '&quot;')}" alt="">`;
+    } else {
+      nameEl.textContent = 'Я';
+      statusEl.innerHTML = '<span class="status-dot"></span>открой через Telegram';
+      return;
+    }
+    if (!tg?.initData) {
+      statusEl.innerHTML = '<span class="status-dot"></span>нет данных авторизации';
+      return;
+    }
+    statusEl.innerHTML = '<span class="status-dot"></span>проверяем аккаунт…';
+    try {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/pekarna-api`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_PUBLISHABLE_KEY,
+          'Authorization': `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+        },
+        body: JSON.stringify({ initData: tg.initData })
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || 'Проверка не пройдена');
+      nameEl.textContent = result.user?.first_name || nameEl.textContent;
+      statusEl.innerHTML = '<span class="status-dot online"></span>Telegram подтверждён';
+    } catch (error) {
+      console.error('Telegram verification failed:', error);
+      statusEl.innerHTML = '<span class="status-dot"></span>не удалось подтвердить';
+    }
+  }
+  verifyTelegramAccount();
   const screens = ['home','capsule','touch','future'];
   let toastTimer, modalMode = 'memory';
   function toast(message) {
