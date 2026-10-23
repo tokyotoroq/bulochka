@@ -166,26 +166,107 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 
 .share-photos-btn{width:100%;margin:12px 0 4px}
 .touch-state{display:flex;align-items:center;justify-content:center;gap:9px;max-width:330px;margin:0 auto;padding:12px 14px;border-radius:15px;font-size:11px;color:#e4d4ff;line-height:1.4}
-.plan-item{display:block;padding:13px;border-radius:19px}
-.plan-content{min-width:0;flex:1;width:auto}
-.plan-top-row{display:flex;align-items:stretch;gap:8px;width:100%}
-.plan-title-button{width:100%;height:100%;min-height:66px;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;border:1px solid rgba(213,186,255,.3);background:rgba(213,186,255,.11);padding:13px 14px;border-radius:14px;color:#fff4ff;font-size:18px;font-weight:750;line-height:1.35;cursor:pointer}
+.plan-item{display:block;padding:10px 12px;border-radius:18px}
+.plan-content{min-width:0;flex:1}
+.plan-top-row{display:flex;align-items:center;gap:9px;width:100%}
+.plan-title-button{min-width:0;flex:1;display:flex;justify-content:space-between;align-items:center;gap:8px;text-align:left;border:0;background:transparent;padding:8px 2px;border-radius:10px;color:#fff4ff;font-size:16px;font-weight:650;line-height:1.4;cursor:pointer}
 .plan-title-text{flex:1;min-width:0;overflow-wrap:anywhere}
-.plan-chevron{color:#f0ddff;background:rgba(213,186,255,.17);border:1px solid rgba(213,186,255,.25);border-radius:8px;display:grid;place-items:center;flex:none;width:28px;height:28px;font-size:20px;line-height:1;transition:transform .2s,background .2s}
-.plan-description{display:none;font-size:14px;color:#e9def6;line-height:1.65;padding:13px 14px;margin-top:8px;border:1px solid rgba(226,204,255,.12);border-radius:12px;background:rgba(255,255,255,.035);overflow-wrap:anywhere;white-space:pre-wrap}
+.plan-chevron{color:#ead9ff;display:grid;place-items:center;flex:none;width:24px;height:24px;font-size:21px;line-height:1;transition:transform .2s}
+.plan-description{display:none;font-size:13px;color:#e9def6;line-height:1.6;padding:12px 13px;margin-top:8px;border:1px solid rgba(226,204,255,.15);border-radius:12px;background:rgba(185,139,239,.10);overflow-wrap:anywhere;white-space:pre-wrap}
 .plan-item.expanded .plan-description{display:block}
-.plan-item.expanded .plan-chevron{transform:rotate(180deg);background:rgba(213,186,255,.28)}
-.plan-actions{display:flex;flex:0 0 116px;flex-direction:column;gap:6px;align-self:stretch}
-.plan-action{flex:1;min-width:0;min-height:0;border:1px solid rgba(226,204,255,.2);border-radius:12px;padding:5px 7px;font-size:11px;font-weight:600;line-height:1.2;cursor:pointer;color:#f4eaff;background:rgba(255,255,255,.055)}
+.plan-item.expanded .plan-chevron{transform:rotate(180deg)}
+.plan-actions{display:flex;align-items:center;gap:6px;flex:none}
+.plan-action{border:1px solid rgba(226,204,255,.2);border-radius:11px;padding:8px 9px;font-size:11px;font-weight:650;line-height:1.2;cursor:pointer;color:#f4eaff;background:rgba(255,255,255,.055);white-space:nowrap}
 .plan-action.complete{background:rgba(201,165,255,.13);border-color:rgba(213,186,255,.35)}
 .plan-action.complete.is-completed{color:#d5c4ed;background:rgba(201,165,255,.07)}
-.plan-action.delete{flex:1 1 0;color:#e7c9d7;background:rgba(207,110,145,.08);border-color:rgba(207,110,145,.22);min-width:0}
+.plan-action.delete{color:#e7c9d7;background:rgba(207,110,145,.08);border-color:rgba(207,110,145,.22)}
 .plan-item.completed .plan-title-button{color:#d2c2e6}
 .plan-item.completed .plan-title-text{text-decoration:line-through;text-decoration-color:rgba(210,194,230,.65)}
 .plan-item.completed{opacity:.84}
+@media(max-width:420px){.plan-item{padding:8px}.plan-top-row{gap:5px}.plan-action{padding:8px 6px;font-size:10px}.plan-title-button{font-size:14px}.plan-chevron{width:18px}}
 
 @media(min-width:560px){.shell{padding-left:22px;padding-right:22px}.hero{min-height:155px}.content{padding-bottom:110px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* Luvora-inspired visual refresh: warm ivory, muted rose, restrained details. */
+:root{
+  --bg:#f7f2ee; --bg2:#eee4e0; --lav:#8c6876; --lav2:#b28b98;
+  --pink:#c99eaa; --text:#342a2c; --muted:#8d7c7c;
+  --glass:rgba(255,255,255,.66); --line:rgba(122,91,98,.16);
+  --shadow:0 12px 32px rgba(74,48,52,.08);
+}
+html,body{background:var(--bg);color:var(--text)}
+.app-bg{background:radial-gradient(ellipse at 8% 0%,rgba(231,204,204,.38),transparent 36%),radial-gradient(ellipse at 95% 42%,rgba(234,218,208,.32),transparent 34%),linear-gradient(155deg,#faf6f2 0%,#f5eeea 52%,#f1e8e4 100%)}
+.app-bg:before{opacity:.12;background-image:radial-gradient(1px 1px at 12% 14%,#8f7278 98%,transparent),radial-gradient(1px 1px at 72% 12%,#8f7278 98%,transparent),radial-gradient(1px 1px at 44% 26%,#8f7278 98%,transparent),radial-gradient(1px 1px at 88% 30%,#8f7278 98%,transparent),radial-gradient(1px 1px at 26% 48%,#8f7278 98%,transparent),radial-gradient(1px 1px at 62% 58%,#8f7278 98%,transparent),radial-gradient(1px 1px at 10% 72%,#8f7278 98%,transparent)}
+.app-bg:after{background:radial-gradient(ellipse at 50% 100%,rgba(207,167,170,.17),transparent 65%);filter:blur(20px)}
+.brand-mark{background:rgba(255,255,255,.68);border-color:var(--line);box-shadow:none}
+.brand-mark svg{stroke:#a77e89}
+h1{color:#392e30;letter-spacing:-.35px}
+.icon-btn{background:rgba(255,255,255,.68);border-color:var(--line);color:#765861}
+.hero{border:1px solid rgba(177,137,143,.25);background:linear-gradient(145deg,#e7d0cc 0%,#d7b7b6 50%,#c8a5aa 100%);box-shadow:0 14px 34px rgba(104,68,74,.10)}
+.hero:before{background:linear-gradient(180deg,rgba(255,250,247,.12),rgba(95,62,69,.10))}
+.moon{background:#fff9f3;box-shadow:0 0 22px rgba(255,248,240,.42)}
+.moon:after{background:#d9babb}
+.horizon{background:linear-gradient(0deg,rgba(125,83,89,.17),transparent)}
+.eyebrow{color:#78565e}
+.hero h2{color:#4a3439;text-shadow:none}
+.hero p{color:#674d52}
+.primary-btn{background:#8e6872;border:1px solid rgba(120,81,91,.16);box-shadow:0 5px 14px rgba(104,67,76,.12);color:#fffaf7}
+.account-card.glass,.couple-photo.glass,.tile.glass,.memory-card.glass,.add-card.glass,.upload-panel.glass,.history-day.glass,.plan-item.glass,.history-empty.glass{background:rgba(255,255,255,.58);border-color:rgba(122,91,98,.14);box-shadow:0 6px 22px rgba(74,48,52,.045)}
+.account-avatar{background:#f1e5e1;border-color:var(--line);color:#9e7781}
+.account-name,.tile-title{color:#3e3033}
+.account-status,.subtitle,.tile-desc,.section-head span,.empty-hint,.upload-caption,.history-day-count{color:#8d7c7c}
+.status-dot{background:#b7a1a3}
+.status-dot.online{background:#82a48a;box-shadow:none}
+.section-head h3{color:#62474e}
+.glass{background:var(--glass);border-color:var(--line);box-shadow:0 7px 22px rgba(74,48,52,.045)}
+.tile{border-radius:17px}
+.tile-icon{background:#f2e6e2;border:1px solid rgba(160,119,128,.13);color:#9b737d}
+.chevron{color:#a77e89}
+.couple-photo-frame{background:#f0e4df;border-color:rgba(122,91,98,.14)}
+.couple-photo-placeholder{color:rgba(158,119,129,.72);text-shadow:none}
+.couple-photo-label{color:#76575e;font-size:12px;letter-spacing:.15px}
+.memory-date{color:#a17b85}.memory-title{color:#443538}.memory-desc{color:#8d7c7c}
+.add-card{color:#8c6570}
+.touch-intro{color:#8d7c7c}
+.touch-orb{border-color:rgba(169,125,136,.36);background:radial-gradient(circle,rgba(213,175,180,.28),rgba(255,255,255,.35) 65%);box-shadow:0 0 45px rgba(175,129,140,.12),inset 0 0 26px rgba(255,255,255,.28)}
+.touch-orb .inner{background:radial-gradient(circle at 35% 25%,rgba(255,250,245,.9),rgba(216,178,184,.34) 65%);border-color:rgba(169,125,136,.32);box-shadow:0 0 24px rgba(175,129,140,.12)}
+.touch-orb.pressing{box-shadow:0 0 55px rgba(196,145,157,.28),inset 0 0 35px rgba(255,255,255,.35)}
+.touch-state{color:#80636a}
+.bottom-nav{background:rgba(250,246,242,.91);border-color:rgba(122,91,98,.16);box-shadow:0 8px 28px rgba(74,48,52,.12)}
+.nav-btn{color:#9b898b}.nav-btn.active{color:#77545e;background:#efe1df;box-shadow:inset 0 0 0 1px rgba(169,125,136,.13)}.nav-btn.active svg{filter:none}
+.toast{background:rgba(250,246,242,.98);border-color:var(--line);color:#49373b}
+.modal-backdrop{background:rgba(54,38,42,.32);backdrop-filter:blur(9px)}
+.modal{background:rgba(250,246,242,.96);border-color:rgba(122,91,98,.17);box-shadow:0 20px 60px rgba(65,43,47,.17)}
+.modal h3{color:#49373b}.modal p{color:#8d7c7c}
+.field{background:rgba(255,255,255,.78);border-color:rgba(122,91,98,.2);color:#49373b}.field::placeholder{color:#ad999b}
+.secondary-btn{border-color:rgba(122,91,98,.19);background:rgba(255,255,255,.65);color:#76575e}
+.upload-symbol{background:#f1e3df;border-color:var(--line);color:#9e7580}
+.upload-title{color:#49373b}
+.photo-grid .photo-item,.photo-item{border-color:rgba(122,91,98,.15);background:#eee4df}
+.photo-label{background:linear-gradient(transparent,rgba(47,32,36,.65));color:#fffaf7}
+.photo-remove{background:rgba(65,45,49,.62);border-color:rgba(255,255,255,.5)}
+.history-day-title{color:#62474e}
+.history-empty{color:#8d7c7c}
+/* Keep photo viewer gestures and controls intact, but align its frame with the new palette. */
+.photo-lightbox{background:radial-gradient(ellipse at 50% 30%,rgba(224,202,198,.98),rgba(185,151,157,.985) 60%,rgba(91,67,74,.99));}
+.photo-lightbox img{border-color:rgba(255,248,243,.72);background:linear-gradient(145deg,rgba(255,250,245,.28),rgba(160,119,129,.18));box-shadow:0 18px 55px rgba(52,33,38,.26),0 0 0 5px rgba(255,248,243,.12)}
+.photo-lightbox-close{background:rgba(68,48,53,.62);border-color:rgba(255,248,243,.55);box-shadow:0 2px 14px rgba(52,33,38,.18)}
+.photo-zoom-controls{border-color:rgba(255,248,243,.35);background:rgba(68,48,53,.65)}
+.photo-zoom-controls button{background:rgba(255,248,243,.18)}
+.plan-item{background:rgba(255,255,255,.62);border-color:rgba(122,91,98,.15)}
+.plan-title-button{color:#49373b}
+.plan-chevron{color:#a17b85}
+.plan-description{color:#735a60;border-color:rgba(122,91,98,.13);background:rgba(228,207,204,.24)}
+.plan-action{color:#63484f;border-color:rgba(122,91,98,.17);background:rgba(255,255,255,.72)}
+.plan-action.complete{background:rgba(202,171,177,.22);border-color:rgba(169,125,136,.3)}
+.plan-action.complete.is-completed{color:#8b7278;background:rgba(202,171,177,.13)}
+.plan-action.delete{color:#9b646c;background:rgba(207,155,161,.11);border-color:rgba(180,118,129,.2)}
+.plan-item.completed{background:rgba(224,208,205,.62);border-color:rgba(169,125,136,.18);opacity:1}
+.plan-item.completed .plan-title-button{color:#8a7378}
+.plan-item.completed .plan-title-text{text-decoration-color:rgba(138,115,120,.55)}
+@media(prefers-color-scheme:dark){/* Keep this app intentionally light to match the chosen Luvora-inspired design. */}
+
 </style>
 </head>
 <body>
@@ -289,39 +370,80 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   const tg = window.Telegram && window.Telegram.WebApp;
   try { if (tg) { tg.ready(); tg.expand(); } } catch (_) {}
   const $ = (id) => document.getElementById(id);
-  let photoZoom = 1;
+  let photoZoom = 1, photoX = 0, photoY = 0;
   const photoImage = $('photoLightboxImage');
-  function setPhotoZoom(value) {
-    photoZoom = Math.max(1, Math.min(4, value));
-    photoImage.style.transform = `scale(${photoZoom})`;
+  const photoStage = $('photoLightbox');
+  const activeTouches = new Map();
+  let gestureStart = null;
+  function applyPhotoTransform() {
+    photoImage.style.transform = `translate(${photoX}px, ${photoY}px) scale(${photoZoom})`;
     $('photoZoomLevel').textContent = `${Math.round(photoZoom * 100)}%`;
     $('photoZoomOut').disabled = photoZoom <= 1;
     $('photoZoomOut').style.opacity = photoZoom <= 1 ? '.45' : '1';
     $('photoZoomIn').disabled = photoZoom >= 4;
     $('photoZoomIn').style.opacity = photoZoom >= 4 ? '.45' : '1';
   }
+  function setPhotoZoom(value) {
+    photoZoom = Math.max(1, Math.min(4, value));
+    if (photoZoom === 1) { photoX = 0; photoY = 0; }
+    applyPhotoTransform();
+  }
   function openPhoto(src, alt='Фотография') {
     if (!src) return;
-    setPhotoZoom(1); photoImage.src = src; photoImage.alt = alt;
-    $('photoLightbox').classList.add('open'); document.body.style.overflow = 'hidden';
+    photoZoom = 1; photoX = 0; photoY = 0; activeTouches.clear(); gestureStart = null;
+    photoImage.src = src; photoImage.alt = alt; applyPhotoTransform();
+    photoStage.classList.add('open'); document.body.style.overflow = 'hidden';
   }
   function closePhoto() {
-    $('photoLightbox').classList.remove('open'); photoImage.removeAttribute('src');
-    document.body.style.overflow = ''; setPhotoZoom(1);
+    photoStage.classList.remove('open'); photoImage.removeAttribute('src');
+    document.body.style.overflow = ''; photoZoom = 1; photoX = 0; photoY = 0; activeTouches.clear(); gestureStart = null; applyPhotoTransform();
   }
+  const distance = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
+  const midpoint = (a,b) => ({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
+  photoStage.addEventListener('touchstart', e => {
+    if (!photoStage.classList.contains('open')) return;
+    for (const t of e.changedTouches) activeTouches.set(t.identifier,{x:t.clientX,y:t.clientY});
+    if (activeTouches.size === 1) {
+      const t = [...activeTouches.values()][0];
+      gestureStart = {type:'pan',x:t.x,y:t.y,photoX,photoY};
+    } else if (activeTouches.size >= 2) {
+      const pts = [...activeTouches.values()];
+      gestureStart = {type:'pinch',distance:distance(pts[0],pts[1]),zoom:photoZoom,mid:midpoint(pts[0],pts[1]),x:photoX,y:photoY};
+    }
+  }, {passive:true});
+  photoStage.addEventListener('touchmove', e => {
+    if (!photoStage.classList.contains('open') || !gestureStart) return;
+    for (const t of e.changedTouches) if (activeTouches.has(t.identifier)) activeTouches.set(t.identifier,{x:t.clientX,y:t.clientY});
+    if (activeTouches.size >= 2) {
+      e.preventDefault(); const pts=[...activeTouches.values()].slice(0,2), mid=midpoint(pts[0],pts[1]);
+      const nextZoom=Math.max(1,Math.min(4,gestureStart.zoom*(distance(pts[0],pts[1])/Math.max(1,gestureStart.distance))));
+      photoZoom=nextZoom; photoX=gestureStart.x+(mid.x-gestureStart.mid.x); photoY=gestureStart.y+(mid.y-gestureStart.mid.y);
+      if(photoZoom===1){photoX=0;photoY=0;} applyPhotoTransform();
+    } else if (activeTouches.size === 1 && photoZoom > 1) {
+      e.preventDefault(); const t=[...activeTouches.values()][0];
+      photoX=gestureStart.photoX+(t.x-gestureStart.x); photoY=gestureStart.photoY+(t.y-gestureStart.y); applyPhotoTransform();
+    }
+  }, {passive:false});
+  function endTouch(e) {
+    for (const t of e.changedTouches) activeTouches.delete(t.identifier);
+    if (!activeTouches.size) gestureStart=null;
+    else if (activeTouches.size===1) { const t=[...activeTouches.values()][0]; gestureStart={type:'pan',x:t.x,y:t.y,photoX,photoY}; }
+  }
+  photoStage.addEventListener('touchend',endTouch,{passive:true});
+  photoStage.addEventListener('touchcancel',endTouch,{passive:true});
   $('photoLightboxClose').addEventListener('click', closePhoto);
   $('photoZoomIn').addEventListener('click', () => setPhotoZoom(photoZoom + .5));
   $('photoZoomOut').addEventListener('click', () => setPhotoZoom(photoZoom - .5));
   photoImage.addEventListener('dblclick', () => setPhotoZoom(photoZoom > 1 ? 1 : 2));
-  $('photoLightbox').addEventListener('wheel', e => {
-    if (!$('photoLightbox').classList.contains('open')) return;
+  photoStage.addEventListener('wheel', e => {
+    if (!photoStage.classList.contains('open')) return;
     e.preventDefault(); setPhotoZoom(photoZoom + (e.deltaY < 0 ? .25 : -.25));
   }, {passive:false});
-  $('photoLightbox').addEventListener('click', e => { if (e.target === $('photoLightbox')) closePhoto(); });
+  photoStage.addEventListener('click', e => { if (e.target === photoStage) closePhoto(); });
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closePhoto();
-    if ($('photoLightbox').classList.contains('open') && (e.key === '+' || e.key === '=')) setPhotoZoom(photoZoom + .5);
-    if ($('photoLightbox').classList.contains('open' ) && e.key === '-') setPhotoZoom(photoZoom - .5);
+    if (photoStage.classList.contains('open') && (e.key === '+' || e.key === '=')) setPhotoZoom(photoZoom + .5);
+    if (photoStage.classList.contains('open') && e.key === '-') setPhotoZoom(photoZoom - .5);
   });
 
   // Проверяем Telegram и отправляем сигнал активности в Supabase.
