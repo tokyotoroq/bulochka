@@ -163,11 +163,12 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .plan-check:checked{background:#c9a5ff;border-color:#e5d1ff}
 .plan-check:checked:after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#2b1d42;font-size:14px;font-weight:700}
 .plan-content{flex:1;min-width:0}
-.plan-title-button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:0;background:none;padding:0;color:#fff4ff;font-size:13px;line-height:1.45;cursor:pointer}
-.plan-title-button span{color:#d5baff;transition:transform .2s}
-.plan-description{display:none;font-size:11px;color:var(--muted);line-height:1.5;padding:8px 4px 1px 0}
+.plan-title-button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;text-align:left;border:1px solid rgba(213,186,255,.28);background:rgba(213,186,255,.09);padding:11px 12px;border-radius:12px;color:#fff4ff;font-size:16px;font-weight:600;line-height:1.4;cursor:pointer;min-height:46px}
+.plan-title-text{flex:1;min-width:0;overflow-wrap:anywhere}
+.plan-chevron{color:#f0ddff;background:rgba(213,186,255,.17);border:1px solid rgba(213,186,255,.25);border-radius:8px;display:grid;place-items:center;flex:none;width:28px;height:28px;font-size:20px;line-height:1;transition:transform .2s,background .2s}
+.plan-description{display:none;font-size:14px;color:#f0e8fa;line-height:1.7;padding:12px 12px 3px;overflow-wrap:anywhere;white-space:pre-wrap}
 .plan-item.expanded .plan-description{display:block}
-.plan-item.expanded .plan-title-button span{transform:rotate(180deg)}
+.plan-item.expanded .plan-chevron{transform:rotate(180deg);background:rgba(213,186,255,.28)}
 .plan-item.completed .plan-title-button{color:#b9a9d1;text-decoration:line-through}
 .plan-item.completed{opacity:.72}
 
@@ -195,7 +196,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
         <div class="moon"></div><div class="horizon"></div>
         <div class="hero-content">
           <p>даже когда между нами километры, мы можем быть ближе.</p>
-          <button class="primary-btn" id="heroTouch"><span aria-hidden="true" style="margin-right:7px;font-size:14px">♡</span>передать тепло</button>
+          <button class="primary-btn" id="heroTouch"><span aria-hidden="true" style="margin-right:7px;font-size:14px">♡</span>Передать тепло</button>
         </div>
       </div>
       <div class="section-head"><h3>маленькие моменты</h3></div>
@@ -326,8 +327,8 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
       const content = document.createElement('div'); content.className = 'plan-content';
       const titleButton = document.createElement('button');
       titleButton.type = 'button'; titleButton.className = 'plan-title-button';
-      const titleText = document.createElement('span'); titleText.textContent = plan.title;
-      const chevron = document.createElement('span'); chevron.textContent = '⌄';
+      const titleText = document.createElement('span'); titleText.className = 'plan-title-text'; titleText.textContent = plan.title;
+      const chevron = document.createElement('span'); chevron.className = 'plan-chevron'; chevron.textContent = '⌄';
       titleButton.append(titleText, chevron);
       const description = document.createElement('div');
       description.className = 'plan-description';
