@@ -203,7 +203,7 @@ html,body{background:var(--bg);color:var(--text)}
 .brand-mark svg{stroke:#a77e89}
 h1{color:#392e30;letter-spacing:-.35px}
 .icon-btn{background:rgba(255,255,255,.68);border-color:var(--line);color:#765861}
-.hero{border:1px solid rgba(177,137,143,.25);background:linear-gradient(145deg,#e7d0cc 0%,#d7b7b6 50%,#c8a5aa 100%);box-shadow:0 14px 34px rgba(104,68,74,.10)}
+.hero{border:1px solid rgba(255,255,255,.8);background:linear-gradient(135deg,#f7e5e8 0%,#eee4f4 52%,#f8e9dc 100%);box-shadow:0 14px 34px rgba(160,116,132,.12)}
 .hero:before{background:linear-gradient(180deg,rgba(255,250,247,.12),rgba(95,62,69,.10))}
 .moon{background:#fff9f3;box-shadow:0 0 22px rgba(255,248,240,.42)}
 .moon:after{background:#d9babb}
@@ -266,6 +266,90 @@ h1{color:#392e30;letter-spacing:-.35px}
 .plan-item.completed .plan-title-button{color:#8a7378}
 .plan-item.completed .plan-title-text{text-decoration-color:rgba(138,115,120,.55)}
 @media(prefers-color-scheme:dark){/* Keep this app intentionally light to match the chosen Luvora-inspired design. */}
+
+
+/* Refined colorful Luvora-inspired finish */
+.app-bg{
+ background:
+  radial-gradient(ellipse at 8% 8%,rgba(236,166,177,.46),transparent 30%),
+  radial-gradient(ellipse at 92% 18%,rgba(171,155,220,.35),transparent 30%),
+  radial-gradient(ellipse at 84% 82%,rgba(240,190,151,.32),transparent 28%),
+  radial-gradient(ellipse at 10% 92%,rgba(177,204,185,.28),transparent 28%),
+  linear-gradient(145deg,#fbf4ef 0%,#f5e9e7 48%,#eee8f2 100%);
+}
+.app-bg:before{
+ opacity:.26;
+ background-image:
+  radial-gradient(ellipse at 18% 20%,rgba(255,255,255,.95) 0 2%,transparent 2.4%),
+  radial-gradient(ellipse at 82% 15%,rgba(255,255,255,.9) 0 1.5%,transparent 2%),
+  radial-gradient(ellipse at 78% 74%,rgba(255,255,255,.9) 0 2%,transparent 2.5%),
+  radial-gradient(ellipse at 22% 82%,rgba(255,255,255,.8) 0 1.5%,transparent 2%);
+}
+.app-bg:after{
+ left:auto;right:-70px;top:20%;bottom:auto;width:220px;height:330px;
+ background:radial-gradient(ellipse at 50% 30%,rgba(222,166,181,.22),transparent 65%);
+ filter:blur(8px);border-radius:50%;
+}
+h1{color:#35272f}
+.subtitle,.account-status,.tile-desc,.empty-hint,.upload-caption,.memory-desc,.touch-intro,.small-note{color:#75636d}
+.section-head h3{color:#694450}
+.hero{
+ background:
+  radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.76),transparent 34%),
+  radial-gradient(ellipse at 18% 80%,rgba(240,194,207,.58),transparent 42%),
+  linear-gradient(125deg,#f6dfe5 0%,#eee3f4 52%,#f7e8dc 100%);
+ border-color:rgba(255,255,255,.88);
+}
+.hero:before{
+ background:
+  radial-gradient(ellipse at 12% 15%,rgba(255,255,255,.35),transparent 22%),
+  radial-gradient(ellipse at 92% 85%,rgba(247,207,199,.35),transparent 28%),
+  linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+}
+.eyebrow{color:#fff2f4}
+.hero h2{color:#694b5b;text-shadow:0 2px 18px rgba(255,255,255,.35)}
+.hero p{color:#795d6c;text-shadow:0 1px 8px rgba(255,255,255,.45)}
+.moon{background:#fffaf0;box-shadow:0 0 24px rgba(255,255,255,.7)}
+.moon:after{background:#eee3f4}
+.primary-btn{background:linear-gradient(120deg,#a65f7a,#82649c);color:#fff;border-color:rgba(255,255,255,.35);box-shadow:0 6px 18px rgba(129,80,119,.2)}
+.tile-icon{background:linear-gradient(145deg,#f4dfe3,#e9e1f2);color:#8f5972;border-color:rgba(153,100,124,.2)}
+.account-card.glass,.couple-photo.glass,.tile.glass,.memory-card.glass,.add-card.glass,.upload-panel.glass,.history-day.glass,.plan-item.glass,.history-empty.glass{
+ background:rgba(255,255,255,.78);border-color:rgba(127,83,102,.18);box-shadow:0 7px 22px rgba(91,59,77,.07)
+}
+.account-name,.tile-title{color:#392a32}
+.account-status,.subtitle,.tile-desc,.section-head span,.empty-hint,.upload-caption,.history-day-count{color:#75636d}
+.couple-photo-frame{background:linear-gradient(145deg,#f1dce1,#e4dff0);border-color:rgba(127,83,102,.18)}
+.couple-photo-label{color:#684452;font-weight:600}
+.bottom-nav{background:rgba(255,249,246,.96);border-color:rgba(127,83,102,.2)}
+.nav-btn{color:#88717c}.nav-btn.active{color:#854b68;background:#f3dfe5}
+.toast{background:rgba(255,250,247,.98);color:#392a32}
+.plan-item{padding:7px 10px;border-radius:16px;transition:background .2s,border-color .2s}
+.plan-title-button{width:100%;min-height:42px;padding:8px 5px;gap:12px;color:#392a32;font-weight:600}
+.plan-chevron{width:28px;height:28px;border-radius:50%;font-size:0;background:#f3e4e9;color:#85566c;transition:transform .2s,background .2s;position:relative}
+.plan-chevron:before{content:"";width:7px;height:7px;border-right:1.8px solid currentColor;border-bottom:1.8px solid currentColor;transform:rotate(45deg) translate(-1px,-1px);display:block}
+.plan-item.expanded .plan-chevron{transform:rotate(180deg);background:#ead7e1}
+.plan-description{display:none}
+.plan-actions{display:none}
+.plan-item.completed{background:rgba(226,213,224,.88);border-color:rgba(150,111,139,.26)}
+.plan-item.completed .plan-title-button{color:#806b7a}
+.plan-item.completed .plan-title-text{text-decoration:line-through;text-decoration-color:rgba(128,107,122,.5)}
+/* Plan detail overlay */
+.plan-detail-backdrop{position:fixed;inset:0;z-index:30;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(48,31,47,.42);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.plan-detail-backdrop.open{display:flex;animation:fade .18s ease}
+.plan-detail-card{width:min(100%,420px);max-height:min(78dvh,620px);overflow:auto;padding:23px 21px 18px;border-radius:25px;background:rgba(255,249,247,.93);border:1px solid rgba(255,255,255,.82);box-shadow:0 24px 80px rgba(57,36,55,.28);color:#392a32}
+.plan-detail-kicker{font-size:10px;letter-spacing:1.7px;text-transform:uppercase;color:#a16b81;margin-bottom:10px}
+.plan-detail-title{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:25px;line-height:1.22;color:#392a32;overflow-wrap:anywhere;margin:0 0 13px}
+.plan-detail-description{font-size:14px;line-height:1.65;color:#6f5964;white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:23px}
+.plan-detail-actions{display:flex;gap:10px;justify-content:flex-end;border-top:1px solid rgba(127,83,102,.14);padding-top:15px}
+.plan-icon-action{width:46px;height:44px;border-radius:15px;display:grid;place-items:center;border:1px solid rgba(127,83,102,.2);background:#f5e8eb;color:#8b526b;cursor:pointer;transition:transform .15s,background .15s}
+.plan-icon-action:active{transform:scale(.95)}
+.plan-icon-action svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.plan-icon-action.complete{background:#e5eee5;border-color:#c9ddcd;color:#52795e}
+.plan-icon-action.delete{background:#f7e3e4;border-color:#ebc9cd;color:#a84f61}
+.plan-icon-action:disabled{opacity:.5;cursor:wait}
+.plan-detail-close{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;border:1px solid rgba(127,83,102,.13);background:rgba(255,255,255,.65);color:#80616d;font-size:20px;line-height:1;cursor:pointer}
+.plan-detail-card{position:relative;padding-top:27px}
+@media(max-width:420px){.plan-detail-backdrop{padding:18px}.plan-detail-card{padding:23px 18px 16px}.plan-detail-title{font-size:23px}.plan-icon-action{width:44px;height:42px}}
 
 </style>
 </head>
@@ -355,7 +439,19 @@ h1{color:#392e30;letter-spacing:-.35px}
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
-<div class="photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии"><button class="photo-lightbox-close" id="photoLightboxClose" type="button" aria-label="Закрыть">×</button><img id="photoLightboxImage" alt="Фотография в полном размере"><div class="photo-zoom-controls" aria-label="Масштаб фотографии"><button id="photoZoomOut" type="button" aria-label="Уменьшить">−</button><span id="photoZoomLevel">100%</span><button id="photoZoomIn" type="button" aria-label="Увеличить">+</button></div></div>
+<div class="photo-lightbox" id="photoLightbox" role="dialog" aria-modal="true" aria-label="Просмотр фотографии"><button class="photo-lightbox-close" id="photoLightboxClose" type="button" aria-label="Закрыть">×</button><img id="photoLightboxImage" alt="Фотография в полном размере"></div>
+<div class="plan-detail-backdrop" id="planDetailBackdrop" role="dialog" aria-modal="true" aria-labelledby="planDetailTitle">
+  <div class="plan-detail-card">
+    <button class="plan-detail-close" id="planDetailClose" type="button" aria-label="Закрыть">×</button>
+    <div class="plan-detail-kicker">Наши планы</div>
+    <h2 class="plan-detail-title" id="planDetailTitle"></h2>
+    <div class="plan-detail-description" id="planDetailDescription"></div>
+    <div class="plan-detail-actions">
+      <button class="plan-icon-action complete" id="planDetailComplete" type="button" aria-label="Отметить выполненным" title="Выполнено"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></svg></button>
+      <button class="plan-icon-action delete" id="planDetailDelete" type="button" aria-label="Удалить план" title="Удалить"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3m-9 0 1 13h10l1-13M10 11v5m4-5v5"/></svg></button>
+    </div>
+  </div>
+</div>
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <h3 id="modalTitle">Добавить</h3><p id="modalDesc">Сохраним это маленькое воспоминание.</p>
@@ -377,11 +473,6 @@ h1{color:#392e30;letter-spacing:-.35px}
   let gestureStart = null;
   function applyPhotoTransform() {
     photoImage.style.transform = `translate(${photoX}px, ${photoY}px) scale(${photoZoom})`;
-    $('photoZoomLevel').textContent = `${Math.round(photoZoom * 100)}%`;
-    $('photoZoomOut').disabled = photoZoom <= 1;
-    $('photoZoomOut').style.opacity = photoZoom <= 1 ? '.45' : '1';
-    $('photoZoomIn').disabled = photoZoom >= 4;
-    $('photoZoomIn').style.opacity = photoZoom >= 4 ? '.45' : '1';
   }
   function setPhotoZoom(value) {
     photoZoom = Math.max(1, Math.min(4, value));
@@ -432,8 +523,6 @@ h1{color:#392e30;letter-spacing:-.35px}
   photoStage.addEventListener('touchend',endTouch,{passive:true});
   photoStage.addEventListener('touchcancel',endTouch,{passive:true});
   $('photoLightboxClose').addEventListener('click', closePhoto);
-  $('photoZoomIn').addEventListener('click', () => setPhotoZoom(photoZoom + .5));
-  $('photoZoomOut').addEventListener('click', () => setPhotoZoom(photoZoom - .5));
   photoImage.addEventListener('dblclick', () => setPhotoZoom(photoZoom > 1 ? 1 : 2));
   photoStage.addEventListener('wheel', e => {
     if (!photoStage.classList.contains('open')) return;
@@ -492,61 +581,79 @@ h1{color:#392e30;letter-spacing:-.35px}
     }
   }
 
+  let selectedPlan = null;
+  function closePlanDetail() {
+    $('planDetailBackdrop').classList.remove('open');
+    selectedPlan = null;
+  }
+  function openPlanDetail(plan, item) {
+    selectedPlan = { plan, item };
+    $('planDetailTitle').textContent = plan.title || 'Наш план';
+    $('planDetailDescription').textContent = plan.description || 'Пока без описания. Маленькие планы тоже имеют значение ♡';
+    $('planDetailComplete').setAttribute('aria-label', plan.is_completed ? 'Снять отметку выполнения' : 'Отметить выполненным');
+    $('planDetailComplete').title = plan.is_completed ? 'Снять отметку' : 'Выполнено';
+    $('planDetailComplete').innerHTML = plan.is_completed
+      ? '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></svg>'
+      : '<svg viewBox="0 0 24 24"><path d="m5 12.5 4.2 4.2L19 7"/></svg>';
+    $('planDetailBackdrop').classList.add('open');
+  }
+  $('planDetailClose').addEventListener('click', closePlanDetail);
+  $('planDetailBackdrop').addEventListener('click', e => { if (e.target === $('planDetailBackdrop')) closePlanDetail(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePlanDetail(); });
+  $('planDetailComplete').addEventListener('click', async () => {
+    if (!selectedPlan) return;
+    const {plan, item} = selectedPlan;
+    if (plan.is_template) { toast('Это пример оформления плана ♡'); return; }
+    const button = $('planDetailComplete');
+    button.disabled = true;
+    try {
+      const nextState = !item.classList.contains('completed');
+      await apiRequest('update_plan', { plan_id: plan.id, is_completed: nextState });
+      plan.is_completed = nextState;
+      item.classList.toggle('completed', nextState);
+      toast(nextState ? 'План выполнен ♡' : 'Отметка снята');
+      closePlanDetail();
+    } catch (error) { toast(error.message || 'Не удалось обновить план'); }
+    finally { button.disabled = false; }
+  });
+  $('planDetailDelete').addEventListener('click', async () => {
+    if (!selectedPlan) return;
+    const {plan} = selectedPlan;
+    if (plan.is_template) { closePlanDetail(); return; }
+    const button = $('planDetailDelete');
+    if (!confirm('Удалить этот план?')) return;
+    button.disabled = true;
+    try {
+      await apiRequest('delete_plan', { plan_id: plan.id });
+      closePlanDetail();
+      await loadPlans();
+      toast('План удалён');
+    } catch (error) { toast(error.message || 'Не удалось удалить план'); }
+    finally { button.disabled = false; }
+  });
+
   function renderPlans(plans) {
     const list = $('planList');
     list.innerHTML = '';
-    if (!plans.length) return;
+    const showingTemplate = !plans.length;
+    if (showingTemplate) plans = [{ id: 'preview-plan-template', title: 'Устроить вечер только для нас', description: 'Выбрать фильм, приготовить что-нибудь вкусное и провести вечер рядом, даже если нас разделяют километры. ♡', is_completed: false, is_template: true }];
     plans.forEach(plan => {
       const item = document.createElement('div');
       item.className = 'plan-item glass' + (plan.is_completed ? ' completed' : '');
       item.dataset.planId = plan.id;
-
-      const content = document.createElement('div'); content.className = 'plan-content';
       const titleButton = document.createElement('button');
-      titleButton.type = 'button'; titleButton.className = 'plan-title-button';
-      const titleText = document.createElement('span'); titleText.className = 'plan-title-text'; titleText.textContent = plan.title;
-      const chevron = document.createElement('span'); chevron.className = 'plan-chevron'; chevron.textContent = '⌄';
+      titleButton.type = 'button';
+      titleButton.className = 'plan-title-button';
+      titleButton.setAttribute('aria-label', `Открыть план: ${plan.title}`);
+      const titleText = document.createElement('span');
+      titleText.className = 'plan-title-text';
+      titleText.textContent = plan.title;
+      const chevron = document.createElement('span');
+      chevron.className = 'plan-chevron';
+      chevron.setAttribute('aria-hidden', 'true');
       titleButton.append(titleText, chevron);
-
-      const description = document.createElement('div');
-      description.className = 'plan-description';
-      description.textContent = plan.description || 'Описание пока не добавлено.';
-      titleButton.addEventListener('click', () => item.classList.toggle('expanded'));
-      const topRow = document.createElement('div'); topRow.className = 'plan-top-row';
-      content.append(titleButton);
-      topRow.append(content);
-
-      const actions = document.createElement('div'); actions.className = 'plan-actions';
-      const complete = document.createElement('button');
-      complete.type = 'button'; complete.className = 'plan-action complete' + (plan.is_completed ? ' is-completed' : '');
-      complete.textContent = plan.is_completed ? '✓ Выполнено' : 'Отметить выполненным';
-      complete.setAttribute('aria-label', plan.is_completed ? 'Снять отметку выполнения' : 'Отметить план выполненным');
-      complete.addEventListener('click', async () => {
-        complete.disabled = true;
-        try {
-          const nextState = !item.classList.contains('completed');
-          await apiRequest('update_plan', { plan_id: plan.id, is_completed: nextState });
-          item.classList.toggle('completed', nextState);
-          complete.classList.toggle('is-completed', nextState);
-          complete.textContent = nextState ? '✓ Выполнено' : 'Отметить выполненным';
-          complete.setAttribute('aria-label', nextState ? 'Снять отметку выполнения' : 'Отметить план выполненным');
-          toast(nextState ? 'План отмечен выполненным ♡' : 'Отметка снята');
-        } catch (error) { toast(error.message || 'Не удалось обновить план'); }
-        finally { complete.disabled = false; }
-      });
-
-      const remove = document.createElement('button');
-      remove.type = 'button'; remove.className = 'plan-action delete'; remove.textContent = 'Удалить';
-      remove.setAttribute('aria-label', 'Удалить план');
-      remove.addEventListener('click', async () => {
-        if (!confirm('Удалить этот план?')) return;
-        remove.disabled = true;
-        try { await apiRequest('delete_plan', { plan_id: plan.id }); await loadPlans(); toast('План удалён'); }
-        catch (error) { remove.disabled = false; toast(error.message || 'Не удалось удалить план'); }
-      });
-      actions.append(complete, remove);
-      topRow.append(actions);
-      item.append(topRow, description);
+      titleButton.addEventListener('click', () => openPlanDetail(plan, item));
+      item.append(titleButton);
       list.append(item);
     });
   }
