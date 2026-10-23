@@ -144,6 +144,22 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 .history-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .history-empty{padding:16px;border-radius:18px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
 
+
+.share-photos-btn{width:100%;margin:12px 0 4px}
+.touch-state{display:flex;align-items:center;justify-content:center;gap:9px;max-width:330px;margin:0 auto;padding:12px 14px;border-radius:15px;font-size:11px;color:#e4d4ff;line-height:1.4}
+.plan-item{align-items:flex-start}
+.plan-check{appearance:none;-webkit-appearance:none;width:21px;height:21px;border:1px solid rgba(226,204,255,.55);border-radius:7px;background:rgba(255,255,255,.04);margin:1px 0 0;flex:none;cursor:pointer;position:relative}
+.plan-check:checked{background:#c9a5ff;border-color:#e5d1ff}
+.plan-check:checked:after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:#2b1d42;font-size:14px;font-weight:700}
+.plan-content{flex:1;min-width:0}
+.plan-title-button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;border:0;background:none;padding:0;color:#fff4ff;font-size:13px;line-height:1.45;cursor:pointer}
+.plan-title-button span{color:#d5baff;transition:transform .2s}
+.plan-description{display:none;font-size:11px;color:var(--muted);line-height:1.5;padding:8px 4px 1px 0}
+.plan-item.expanded .plan-description{display:block}
+.plan-item.expanded .plan-title-button span{transform:rotate(180deg)}
+.plan-item.completed .plan-title-button{color:#b9a9d1;text-decoration:line-through}
+.plan-item.completed{opacity:.72}
+
 @media(min-width:560px){.shell{padding-left:22px;padding-right:22px}.hero{min-height:290px}.content{padding-bottom:110px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style>
@@ -164,17 +180,17 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
         <div class="moon"></div><div class="horizon"></div>
         <div class="hero-content">
           <p>даже когда между нами километры, мы можем быть ближе.</p>
-          <button class="primary-btn" id="heroTouch">♡ &nbsp; Передать тепло</button>
+          <button class="primary-btn" id="heroTouch"><span aria-hidden="true" style="margin-right:7px;font-size:14px">♡</span>Передать тепло</button>
         </div>
       </div>
       <div class="section-head"><h3>маленькие моменты</h3><span>наше общее пространство</span></div>
       <button class="tile glass" id="heartTile">
-        <div class="tile-icon">♡</div><div class="tile-copy"><div class="tile-title">передать тепло</div><div class="tile-desc">небольшой знак, что мы рядом друг с другом</div></div><span class="chevron">›</span>
+        <div class="tile-icon">✧</div><div class="tile-copy"><div class="tile-title">поделиться планом</div><div class="tile-desc">добавить идею для нашего будущего</div></div><span class="chevron">›</span>
       </button>
-      <button class="tile glass" id="noteTile">
-        <div class="tile-icon">📷</div><div class="tile-copy"><div class="tile-title">поделиться моментом</div><div class="tile-desc">фото, мысли и маленькие события дня</div></div><span class="chevron">›</span>
+      <button class="tile glass" id="touchTile">
+        <div class="tile-icon"><svg viewBox="0 0 24 24" width="25" height="25" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5.5" width="18" height="14" rx="2.5"/><circle cx="12" cy="12.5" r="3.5"/><path d="M8 5.5 9.5 3.5h5L16 5.5"/></svg></div><div class="tile-copy"><div class="tile-title">поделиться моментом</div><div class="tile-desc">маленькие события дня</div></div><span class="chevron">›</span>
       </button>
-      <div class="section-head"><h3>наши дни</h3></div>
+      
       <div class="couple-photos">
         <div class="couple-photo glass">
           <div class="couple-photo-frame" id="homePhotoMe"><div class="couple-photo-placeholder">♡</div></div>
@@ -198,29 +214,29 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
         <button class="primary-btn" id="choosePhotos">Выбрать фото</button>
       </div>
       <div id="todayPhotos" class="photo-grid"></div>
+      <button class="primary-btn share-photos-btn" id="sharePhotos" hidden>Поделиться</button>
       <div class="section-head"><h3>Наша история</h3><span id="historyCount">пока пусто</span></div>
       <p class="empty-hint">Фотографии прошлых дней будут храниться здесь по датам.</p>
       <div id="historyList" class="history-list"></div>
     </section>
 
     <section class="screen" id="scr-touch">
-      <div class="section-head" style="justify-content:center;margin-top:5px"><h3>Почувствуй, что мы рядом</h3></div>
+      <div class="section-head" style="justify-content:center;margin-top:5px"><h3>Касания</h3></div>
       <div class="touch-wrap">
-        <p class="touch-intro">Коснись и удерживай сферу. Пусть экран мягко отзовётся, словно мы держимся за руки.</p>
-        <button class="touch-orb" id="touchOrb" aria-label="Нажми и удерживай, чтобы передать тепло"><span class="inner">♡</span></button>
-        <div class="pulse-status" id="pulseStatus">коснись, чтобы передать тепло</div>
-        <p class="small-note">Сейчас это визуальная демоверсия на одном устройстве. Чтобы касания появлялись на обоих телефонах, позже подключим синхронизацию.</p>
+        <p class="touch-intro">Зажмите круг одновременно на своих телефонах. Когда вы оба будете держать его, появится общая анимация и телефоны завибрируют.</p>
+        <button class="touch-orb" id="touchOrb" aria-label="Нажми и удерживай круг"><span class="inner">♡</span></button>
+        <div class="pulse-status" id="pulseStatus">ожидаем, когда вы будете готовы</div>
+        <p class="small-note">Совместное касание заработает после подключения общего сервера. Пока сервер не подключён, одиночное нажатие не вызывает вибрацию и не имитирует совместное событие.</p>
       </div>
-      <button class="tile glass" id="touchSend"><div class="tile-icon">✨</div><div class="tile-copy"><div class="tile-title">Отправить маленький знак</div><div class="tile-desc">Пусть мы помним друг о друге</div></div><span class="chevron">›</span></button>
     </section>
 
     <section class="screen" id="scr-future">
-      <div class="section-head" style="margin-top:4px"><h3>Когда-нибудь вместе</h3><span>наши планы</span></div>
+      <div class="section-head" style="margin-top:4px"><h3>Когда-нибудь</h3></div>
       <p class="empty-hint">Мечты становятся ближе, когда мы записываем их вместе.</p>
       <div id="planList">
-        <div class="plan-item glass"><span class="plan-dot"></span><div class="plan-text">Встретить рассвет и никуда не спешить</div><span class="plan-state">♡</span></div>
-        <div class="plan-item glass"><span class="plan-dot"></span><div class="plan-text">Приготовить огромную лазанью</div><span class="plan-state">♡</span></div>
-        <div class="plan-item glass"><span class="plan-dot"></span><div class="plan-text">Выбрать город и просто гулять весь день</div><span class="plan-state">♡</span></div>
+        <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Встретить рассвет и никуда не спешить <span>⌄</span></button><div class="plan-description">Найти красивое место, взять что-нибудь вкусное и никуда не торопиться.</div></div></div>
+        <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Приготовить огромную лазанью <span>⌄</span></button><div class="plan-description">Выбрать рецепт, вместе сходить за продуктами и устроить домашний вечер.</div></div></div>
+        <div class="plan-item glass"><input class="plan-check" type="checkbox" aria-label="Отметить план выполненным"><div class="plan-content"><button class="plan-title-button" type="button">Выбрать город и просто гулять весь день <span>⌄</span></button><div class="plan-description">Погулять без строгого маршрута, найти уютное кафе и сделать фотографии.</div></div></div>
       </div>
       <button class="add-card glass" id="addPlan"><span>＋ &nbsp; Добавить нашу мечту</span><span>✧</span></button>
     </section>
@@ -271,21 +287,19 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     // но сам по себе не доставляет событие другому пользователю.
     try { if (tg && typeof tg.sendData === 'function') tg.sendData(JSON.stringify({action:'affection',type,time:new Date().toISOString()})); } catch (_) {}
   }
-  $('heroTouch').addEventListener('click', () => { navTo('touch'); sendSign('touch'); });
-  $('heartTile').addEventListener('click', () => sendSign('heart'));
-  $('touchSend').addEventListener('click', () => sendSign('touch'));
-  $('noteTile').addEventListener('click', () => navTo('capsule'));
+  $('heroTouch').addEventListener('click', () => navTo('touch'));
+  $('heartTile').addEventListener('click', () => navTo('future'));
+  $('touchTile').addEventListener('click', () => navTo('capsule'));
 
   const orb = $('touchOrb'), status = $('pulseStatus');
   let holding = false;
   function startHold(e) {
     if (holding) return; holding = true; e.preventDefault();
-    orb.classList.add('pressing'); status.textContent = 'передаю тебе тепло…'; status.style.color = '#f0c7f4'; haptic('medium');
+    orb.classList.add('pressing'); status.textContent = 'ты удерживаешь касание…'; status.style.color = '#f0c7f4';
     try { if (orb.setPointerCapture && e.pointerId !== undefined) orb.setPointerCapture(e.pointerId); } catch (_) {}
   }
   function endHold() {
-    if (!holding) return; holding = false; orb.classList.remove('pressing'); status.textContent = 'коснись, чтобы передать тепло'; status.style.color = '';
-    try { if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light'); } catch (_) {}
+    if (!holding) return; holding = false; orb.classList.remove('pressing'); status.textContent = 'ожидаем, когда вы будете готовы'; status.style.color = '';
   }
   orb.addEventListener('pointerdown', startHold);
   orb.addEventListener('pointerup', endHold);
@@ -293,14 +307,24 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   orb.addEventListener('lostpointercapture', endHold);
   window.addEventListener('pointerup', endHold);
 
+  document.querySelectorAll('.plan-title-button').forEach(btn => {
+    btn.addEventListener('click', () => btn.closest('.plan-item').classList.toggle('expanded'));
+  });
+  document.querySelectorAll('.plan-check').forEach(check => {
+    check.addEventListener('change', () => {
+      check.closest('.plan-item').classList.toggle('completed', check.checked);
+      toast(check.checked ? 'План отмечен выполненным ♡' : 'Отметка снята');
+    });
+  });
+
   function openModal(mode) {
     modalMode = mode;
     $('modalTitle').textContent = mode === 'plan' ? 'Наша новая мечта' : mode === 'note' ? 'Тёплое сообщение' : 'Новое воспоминание';
-    $('modalDesc').textContent = mode === 'plan' ? 'Запишите то, что однажды захотите сделать вместе.' : mode === 'note' ? 'Оставь пару тёплых слов для нашего пространства.' : 'Сохраним момент, к которому приятно вернуться.';
+    $('modalDesc').textContent = mode === 'plan' ? 'Добавьте название плана и необязательное описание.' : mode === 'note' ? 'Оставь пару тёплых слов для нашего пространства.' : 'Сохраним момент, к которому приятно вернуться.';
     $('modalTitleInput').value = '';
     $('modalBodyInput').value = '';
     $('modalTitleInput').placeholder = mode === 'plan' ? 'Что сделаем вместе?' : mode === 'note' ? 'Короткий заголовок' : 'Название момента';
-    $('modalBodyInput').placeholder = mode === 'plan' ? 'Подробности (необязательно)' : mode === 'note' ? 'Напиши пару тёплых слов…' : 'Почему это важно?';
+    $('modalBodyInput').placeholder = mode === 'plan' ? 'Описание плана (необязательно)' : mode === 'note' ? 'Напиши пару тёплых слов…' : 'Почему это важно?';
     $('modalBackdrop').classList.add('open');
     setTimeout(() => $('modalTitleInput').focus(), 100);
   }
@@ -313,10 +337,15 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     if (!title) { toast('Добавь название, чтобы сохранить ♡'); $('modalTitleInput').focus(); return; }
     if (modalMode === 'plan') {
       const item = document.createElement('div'); item.className = 'plan-item glass';
-      const dot = document.createElement('span'); dot.className = 'plan-dot';
-      const text = document.createElement('div'); text.className = 'plan-text'; text.textContent = title + (body ? ' — ' + body : '');
-      const state = document.createElement('span'); state.className = 'plan-state'; state.textContent = '♡';
-      item.append(dot,text,state); $('planList').append(item);
+      const check = document.createElement('input'); check.type = 'checkbox'; check.className = 'plan-check'; check.setAttribute('aria-label','Отметить план выполненным');
+      const content = document.createElement('div'); content.className = 'plan-content';
+      const titleButton = document.createElement('button'); titleButton.type = 'button'; titleButton.className = 'plan-title-button';
+      const titleText = document.createElement('span'); titleText.textContent = title;
+      const chevron = document.createElement('span'); chevron.textContent = '⌄'; titleButton.append(titleText, chevron);
+      const description = document.createElement('div'); description.className = 'plan-description'; description.textContent = body || 'Описание пока не добавлено.';
+      titleButton.addEventListener('click', () => item.classList.toggle('expanded'));
+      check.addEventListener('change', () => { item.classList.toggle('completed', check.checked); toast(check.checked ? 'План отмечен выполненным ♡' : 'Отметка снята'); });
+      content.append(titleButton, description); item.append(check, content); $('planList').append(item);
     } else if (modalMode === 'memory') {
       const item = document.createElement('article'); item.className = 'memory-card glass';
       const top = document.createElement('div');
@@ -386,6 +415,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     if (meFrame) meFrame.innerHTML = todays[0] ? `<img src="${todays[0].data}" alt="Фото за сегодня">` : '<div class="couple-photo-placeholder">♡</div>';
     if (partnerFrame) partnerFrame.innerHTML = todays[1] ? `<img src="${todays[1].data}" alt="Фото за сегодня">` : '<div class="couple-photo-placeholder">♡</div>';
     $('dailyCount').textContent = `${todays.length} из 4 фото`;
+    $('sharePhotos').hidden = todays.length === 0;
     $('choosePhotos').disabled = todays.length >= 4;
     $('choosePhotos').style.opacity = todays.length >= 4 ? '.5' : '1';
     const todayBox = $('todayPhotos'); todayBox.innerHTML = '';
@@ -452,6 +482,11 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     } catch (_) { toast('Не получилось прочитать одно из изображений. Попробуй другое фото.'); }
   });
   renderPhotos();
+  $('sharePhotos').addEventListener('click', () => {
+    const todays = readPhotoStore().days[todayKey()] || [];
+    if (!todays.length) { toast('Сначала выбери хотя бы одну фотографию'); return; }
+    toast('Чтобы поделиться фотографиями на обоих телефонах, нужно подключить общий сервер ♡');
+  });
 
   // Telegram's actual name is used only when available.
   try {
