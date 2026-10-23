@@ -230,7 +230,6 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
         <button class="primary-btn" id="choosePhotos">Выбрать фото</button>
       </div>
       <div id="todayPhotos" class="photo-grid"></div>
-      <button class="primary-btn share-photos-btn" id="sharePhotos" hidden>Поделиться</button>
       <div class="section-head"><h3>Наша история</h3><span id="historyCount">пока пусто</span></div>
       <p class="empty-hint">Фотографии прошлых дней будут храниться здесь по датам.</p>
       <div id="historyList" class="history-list"></div>
@@ -309,6 +308,18 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     } catch (error) {
       console.error('Plan loading failed:', error);
       toast(error.message || 'Не удалось загрузить планы');
+    }
+  }
+
+  async function loadSharedPhotos() {
+    if (!telegramVerified) return;
+    try {
+      const result = await apiRequest('list_photos');
+      sharedPhotos = result.photos || [];
+      renderPhotos();
+    } catch (error) {
+      console.error('Photo loading failed:', error);
+      toast(error.message || 'Не удалось загрузить общие фотографии');
     }
   }
 
@@ -422,6 +433,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
       telegramVerified = true;
       await sendHeartbeat();
       await loadPlans();
+      await loadSharedPhotos();
       if (heartbeatTimer) clearInterval(heartbeatTimer);
       heartbeatTimer = setInterval(sendHeartbeat, 20000);
     } catch (error) {
@@ -481,18 +493,18 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
 
   function openModal(mode) {
     modalMode = mode;
-    $('modalTitle').textContent = mode === 'plan' ? 'Наша новая мечта' : mode === 'note' ? 'Тёплое сообщение' : 'Новое воспоминание';
-    $('modalDesc').textContent = mode === 'plan' ? 'Добавьте название плана и необязательное описание.' : mode === 'note' ? 'Оставь пару тёплых слов для нашего пространства.' : 'Сохраним момент, к которому приятно вернуться.';
+    $('modalTitle').textContent = mode === 'plan' ? 'Наша новая мечта' : 'Тёплое сообщение';
+    $('modalDesc').textContent = mode === 'plan' ? 'Добавьте название плана и необязательное описание.' : 'Оставь пару тёплых слов для нашего пространства.';
     $('modalTitleInput').value = '';
     $('modalBodyInput').value = '';
-    $('modalTitleInput').placeholder = mode === 'plan' ? 'Что сделаем вместе?' : mode === 'note' ? 'Короткий заголовок' : 'Название момента';
-    $('modalBodyInput').placeholder = mode === 'plan' ? 'Описание плана (необязательно)' : mode === 'note' ? 'Напиши пару тёплых слов…' : 'Почему это важно?';
+    $('modalTitleInput').placeholder = mode === 'plan' ? 'Что сделаем вместе?' : 'Короткий заголовок';
+    $('modalBodyInput').placeholder = mode === 'plan' ? 'Описание плана (необязательно)' : 'Напиши пару тёплых слов…';
     $('modalBackdrop').classList.add('open');
     setTimeout(() => $('modalTitleInput').focus(), 100);
   }
   function closeModal() { $('modalBackdrop').classList.remove('open'); }
   $('addPlan').addEventListener('click', () => openModal('plan'));
-  $('modalCancel').addEventListener('click', closeModal);
+    $('modalCancel').addEventListener('click', closeModal);
   $('modalBackdrop').addEventListener('click', e => { if (e.target === $('modalBackdrop')) closeModal(); });
   $('modalSave').addEventListener('click', async () => {
     const title = $('modalTitleInput').value.trim(), body = $('modalBodyInput').value.trim();
@@ -509,16 +521,6 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
         toast(error.message || 'Не удалось сохранить план');
       } finally { saveButton.disabled = false; }
       return;
-    } else if (modalMode === 'memory') {
-      const item = document.createElement('article'); item.className = 'memory-card glass';
-      const top = document.createElement('div');
-      const date = document.createElement('div'); date.className = 'memory-date'; date.textContent = 'только что';
-      const emoji = document.createElement('div'); emoji.className = 'memory-emoji'; emoji.textContent = '💜';
-      top.append(date,emoji);
-      const bottom = document.createElement('div');
-      const name = document.createElement('div'); name.className = 'memory-title'; name.textContent = title;
-      const desc = document.createElement('div'); desc.className = 'memory-desc'; desc.textContent = body || 'Маленькая часть нашей истории.';
-      bottom.append(name,desc); item.append(top,bottom); $('memoryList').prepend(item);
     } else {
       toast('Тёплые слова подготовлены ♡');
       try { if (tg?.sendData) tg.sendData(JSON.stringify({action:'note_draft',title,body,time:new Date().toISOString()})); } catch (_) {}
@@ -528,20 +530,12 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
   });
   $('modalTitleInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('modalSave').click(); });
 
-  // Daily moments: four photos per local calendar day. Yesterday's photos move to history.
-  const STORAGE_KEY = 'our-space-daily-photos-v1';
+  // Shared photo gallery: images are stored in Supabase, not only in this browser.
+  let sharedPhotos = [];
   const todayKey = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   };
-  function readPhotoStore() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"days":{}}'); }
-    catch (_) { return {days:{}}; }
-  }
-  function writePhotoStore(store) {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); return true; }
-    catch (_) { toast('Не удалось сохранить фото. Попробуй выбрать снимки меньшего размера.'); return false; }
-  }
   function compressImage(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -567,18 +561,22 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     const [y,m,d] = key.split('-').map(Number);
     return new Date(y,m-1,d).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'});
   }
-  function escapeText(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function photoDay(photo) {
+    const savedDay = String(photo.text || '').match(/^photo:(\d{4}-\d{2}-\d{2})$/);
+    if (savedDay) return savedDay[1];
+    const date = new Date(photo.created_at);
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
   }
   function renderPhotos() {
-    const store = readPhotoStore(), today = todayKey();
-    // Any previous date is automatically displayed in history, not in today's gallery.
-    const todays = store.days[today] || [];
+    const today = todayKey();
+    const todays = sharedPhotos.filter(photo => photoDay(photo) === today);
+    const history = [...new Set(sharedPhotos.filter(photo => photoDay(photo) < today).map(photo => photoDay(photo)))].sort((a,b) => b.localeCompare(a));
     const meFrame = $('homePhotoMe'), partnerFrame = $('homePhotoPartner');
-    if (meFrame) meFrame.innerHTML = todays[0] ? `<img src="${todays[0].data}" alt="Фото за сегодня">` : '<div class="couple-photo-placeholder">♡</div>';
-    if (partnerFrame) partnerFrame.innerHTML = todays[1] ? `<img src="${todays[1].data}" alt="Фото за сегодня">` : '<div class="couple-photo-placeholder">♡</div>';
+    const myPhoto = todays.find(photo => String(photo.author_telegram_id) === String(tg?.initDataUnsafe?.user?.id));
+    const partnerPhoto = todays.find(photo => String(photo.author_telegram_id) !== String(tg?.initDataUnsafe?.user?.id));
+    if (meFrame) meFrame.innerHTML = myPhoto ? `<img src="${myPhoto.signed_url}" alt="Мой кадр дня">` : '<div class="couple-photo-placeholder">♡</div>';
+    if (partnerFrame) partnerFrame.innerHTML = partnerPhoto ? `<img src="${partnerPhoto.signed_url}" alt="Кадр партнёра">` : '<div class="couple-photo-placeholder">♡</div>';
     $('dailyCount').textContent = `${todays.length} из 4 фото`;
-    $('sharePhotos').hidden = todays.length === 0;
     $('choosePhotos').disabled = todays.length >= 4;
     $('choosePhotos').style.opacity = todays.length >= 4 ? '.5' : '1';
     const todayBox = $('todayPhotos'); todayBox.innerHTML = '';
@@ -587,69 +585,64 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
       empty.textContent = 'Здесь появятся фотографии, которыми мы захотим поделиться сегодня.';
       todayBox.append(empty);
     } else {
-      todays.forEach((photo, index) => {
+      todays.forEach(photo => {
         const card = document.createElement('div'); card.className = 'photo-item';
-        const img = document.createElement('img'); img.src = photo.data; img.alt = 'Момент дня';
-        const label = document.createElement('div'); label.className = 'photo-label'; label.textContent = photo.time || 'Сегодня';
+        const img = document.createElement('img'); img.src = photo.signed_url; img.alt = 'Момент дня';
+        const label = document.createElement('div'); label.className = 'photo-label';
+        const authorId = String(photo.author_telegram_id);
+        label.textContent = `${authorId === String(tg?.initDataUnsafe?.user?.id) ? 'Ты' : 'Любимый человек'} · ${new Date(photo.created_at).toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})}`;
         const remove = document.createElement('button'); remove.className = 'photo-remove'; remove.type = 'button'; remove.textContent = '×'; remove.setAttribute('aria-label','Удалить фото');
-        remove.addEventListener('click', () => {
-          const current = readPhotoStore(); current.days[today] = (current.days[today] || []).filter((_, i) => i !== index);
-          if (!current.days[today].length) delete current.days[today];
-          if (writePhotoStore(current)) { renderPhotos(); toast('Фото удалено'); }
+        remove.addEventListener('click', async () => {
+          if (!confirm('Удалить эту фотографию у вас обоих?')) return;
+          remove.disabled = true;
+          try { await apiRequest('delete_photo', { photo_id: photo.id }); await loadSharedPhotos(); toast('Фото удалено'); }
+          catch (error) { remove.disabled = false; toast(error.message || 'Не удалось удалить фото'); }
         });
         card.append(img,label,remove); todayBox.append(card);
       });
     }
-    const history = Object.keys(store.days).filter(k => k < today && store.days[k]?.length).sort((a,b) => b.localeCompare(a));
     $('historyCount').textContent = history.length ? `${history.length} ${history.length === 1 ? 'день' : 'дней'}` : 'пока пусто';
     const historyBox = $('historyList'); historyBox.innerHTML = '';
     if (!history.length) {
-      const empty = document.createElement('div'); empty.className = 'history-empty glass'; empty.textContent = 'Здесь будут храниться моменты предыдущих дней. Новая дата начнётся автоматически.';
+      const empty = document.createElement('div'); empty.className = 'history-empty glass'; empty.textContent = 'Здесь будут храниться моменты предыдущих дней.';
       historyBox.append(empty);
     } else {
       history.forEach(day => {
+        const dayPhotos = sharedPhotos.filter(photo => photoDay(photo) === day);
         const wrap = document.createElement('section'); wrap.className = 'history-day glass';
         const head = document.createElement('div'); head.className = 'history-day-head';
         const title = document.createElement('div'); title.className = 'history-day-title'; title.textContent = formatDay(day);
-        const count = document.createElement('div'); count.className = 'history-day-count'; count.textContent = `${store.days[day].length} фото`;
+        const count = document.createElement('div'); count.className = 'history-day-count'; count.textContent = `${dayPhotos.length} фото`;
         head.append(title,count);
         const thumbs = document.createElement('div'); thumbs.className = 'history-thumbs';
-        store.days[day].forEach(photo => {
-          const thumb = document.createElement('div'); thumb.className = 'history-thumb';
-          const img = document.createElement('img'); img.src = photo.data; img.alt = 'Фото из истории'; thumb.append(img); thumbs.append(thumb);
-        });
+        dayPhotos.forEach(photo => { const thumb = document.createElement('div'); thumb.className = 'history-thumb'; const img = document.createElement('img'); img.src = photo.signed_url; img.alt = 'Фото из истории'; thumb.append(img); thumbs.append(thumb); });
         wrap.append(head,thumbs); historyBox.append(wrap);
       });
     }
   }
   $('choosePhotos').addEventListener('click', () => {
-    const count = (readPhotoStore().days[todayKey()] || []).length;
-    if (count >= 4) { toast('На сегодня уже есть четыре фотографии ♡'); return; }
+    if (sharedPhotos.filter(photo => photoDay(photo) === todayKey()).length >= 4) { toast('На сегодня уже есть четыре фотографии ♡'); return; }
     $('photoInput').click();
   });
   $('photoInput').addEventListener('change', async (event) => {
     const files = Array.from(event.target.files || []).filter(f => f.type.startsWith('image/'));
     event.target.value = '';
     if (!files.length) return;
-    const store = readPhotoStore(), key = todayKey(), current = store.days[key] || [];
-    const allowed = files.slice(0, Math.max(0, 4 - current.length));
+    const currentCount = sharedPhotos.filter(photo => photoDay(photo) === todayKey()).length;
+    const allowed = files.slice(0, Math.max(0, 4 - currentCount));
     if (!allowed.length) { toast('На сегодня уже есть четыре фотографии ♡'); return; }
     if (allowed.length < files.length) toast('Добавим только фото, помещающиеся в лимит на сегодня.');
+    const chooseButton = $('choosePhotos'); chooseButton.disabled = true;
     try {
       for (const file of allowed) {
         const data = await compressImage(file);
-        current.push({data, time:new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})});
+        await apiRequest('add_photo', { image_data: data, day_key: todayKey() });
       }
-      store.days[key] = current;
-      if (writePhotoStore(store)) { renderPhotos(); toast('Момент добавлен ♡'); haptic(); }
-    } catch (_) { toast('Не получилось прочитать одно из изображений. Попробуй другое фото.'); }
+      await loadSharedPhotos(); toast('Фото появилось у вас обоих ♡'); haptic();
+    } catch (error) { toast(error.message || 'Не удалось загрузить фото'); }
+    finally { chooseButton.disabled = false; }
   });
   renderPhotos();
-  $('sharePhotos').addEventListener('click', () => {
-    const todays = readPhotoStore().days[todayKey()] || [];
-    if (!todays.length) { toast('Сначала выбери хотя бы одну фотографию'); return; }
-    toast('Чтобы поделиться фотографиями на обоих телефонах, нужно подключить общий сервер ♡');
-  });
 
   // Telegram's actual name is used only when available.
   try {
