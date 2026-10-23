@@ -215,11 +215,11 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
       <div class="couple-photos gallery-section">
         <div class="couple-photo glass">
           <div class="couple-photo-frame" id="homePhotoMe"><div class="couple-photo-placeholder">♡</div></div>
-          <div class="couple-photo-label">Мой кадр дня</div>
+          <div class="couple-photo-label">Пекарь</div>
         </div>
         <div class="couple-photo glass">
           <div class="couple-photo-frame" id="homePhotoPartner"><div class="couple-photo-placeholder">♡</div></div>
-          <div class="couple-photo-label">Твой кадр дня</div>
+          <div class="couple-photo-label">Булочка</div>
         </div>
       </div>
     </section>
@@ -642,7 +642,7 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(20px,5vw,25px);fo
     const meFrame = $('homePhotoMe'), partnerFrame = $('homePhotoPartner');
     const myPhoto = todays.find(photo => String(photo.author_telegram_id) === String(tg?.initDataUnsafe?.user?.id));
     const partnerPhoto = todays.find(photo => String(photo.author_telegram_id) !== String(tg?.initDataUnsafe?.user?.id));
-    if (meFrame) { meFrame.innerHTML = myPhoto ? `<img src="${myPhoto.signed_url}" alt="Мой кадр дня">` : '<div class="couple-photo-placeholder">♡</div>'; if (myPhoto) meFrame.querySelector('img').addEventListener('click', () => openPhoto(myPhoto.signed_url, 'Мой кадр дня')); }
+    if (meFrame) { meFrame.innerHTML = myPhoto ? `<img src="${myPhoto.signed_url}" alt="Пекарь">` : '<div class="couple-photo-placeholder">♡</div>'; if (myPhoto) meFrame.querySelector('img').addEventListener('click', () => openPhoto(myPhoto.signed_url, 'Пекарь')); }
     if (partnerFrame) { partnerFrame.innerHTML = partnerPhoto ? `<img src="${partnerPhoto.signed_url}" alt="Кадр партнёра">` : '<div class="couple-photo-placeholder">♡</div>'; if (partnerPhoto) partnerFrame.querySelector('img').addEventListener('click', () => openPhoto(partnerPhoto.signed_url, 'Кадр партнёра')); }
     $('dailyCount').textContent = `${todays.length} из 4 фото`;
     $('choosePhotos').disabled = todays.length >= 4;
