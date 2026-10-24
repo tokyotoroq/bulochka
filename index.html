@@ -670,27 +670,6 @@ h1{color:#35272f}
     statusEl.innerHTML = `<span class="${dotClass}"></span>${message}`;
   }
 
-  async function refreshPartnerProfile() {
-    if (!telegramVerified || !tg?.initData) return;
-    try {
-      const result = await apiRequest('touch_status');
-      const partner = result.partner;
-      const nameEl = $('partnerAccountName');
-      const statusEl = $('partnerAccountStatus');
-      if (!partner) {
-        nameEl.textContent = 'Ты';
-        statusEl.innerHTML = '<span class="status-dot"></span>аккаунт не привязан';
-        return;
-      }
-      const fullName = [partner.first_name, partner.last_name].filter(Boolean).join(' ').trim();
-      nameEl.textContent = fullName || (partner.username ? '@' + partner.username : 'Ты');
-      const dotClass = partner.online ? 'status-dot online' : 'status-dot';
-      statusEl.innerHTML = `<span class="${dotClass}"></span>${partner.online ? 'в сети' : 'не в сети'}`;
-    } catch (error) {
-      console.warn('Partner profile unavailable:', error);
-    }
-  }
-
   async function sendHeartbeat() {
     if (!telegramVerified || !tg?.initData) return;
     try {
@@ -748,11 +727,7 @@ h1{color:#35272f}
       await loadPlans();
       await loadSharedPhotos();
       if (heartbeatTimer) clearInterval(heartbeatTimer);
-      heartbeatTimer = setInterval(() => {
-        sendHeartbeat();
-        refreshPartnerProfile();
-      }, 20000);
-      await refreshPartnerProfile();
+      heartbeatTimer = setInterval(sendHeartbeat, 20000);
     } catch (error) {
       console.error('Telegram verification failed:', error);
       setMyStatus('offline', 'не удалось подтвердить');
@@ -815,14 +790,6 @@ h1{color:#35272f}
       const result = await touchAction('touch_status');
       if (!result) return;
       partnerTouch = !!result.partner_touch;
-      if (result.partner) {
-        const partner = result.partner;
-        const nameEl = $('partnerAccountName');
-        const statusEl = $('partnerAccountStatus');
-        const fullName = [partner.first_name, partner.last_name].filter(Boolean).join(' ').trim();
-        nameEl.textContent = fullName || (partner.username ? '@' + partner.username : 'Ты');
-        statusEl.innerHTML = `<span class="${partner.online ? 'status-dot online' : 'status-dot'}"></span>${partner.online ? 'в сети' : 'не в сети'}`;
-      }
       const nowTogether = holding && partnerTouch;
       orb.classList.toggle('partner-waiting', partnerTouch && !holding);
       orb.classList.toggle('together', nowTogether);
@@ -836,7 +803,7 @@ h1{color:#35272f}
       }
       togetherTouch = nowTogether;
       if (nowTogether) status.textContent = 'вы чувствуете друг друга ♡';
-      else if (holding) status.textContent = 'ты посылаешь ей прикосновение…';
+      else if (holding) status.textContent = 'ты посылаешь тепло…';
       else if (partnerTouch) status.textContent = 'тебя ждут у сферы ♡';
       else { status.textContent = 'нажми и удерживай, чтобы послать прикосновение'; status.style.color = ''; }
     } catch (error) { console.warn('Touch status unavailable:', error); }
